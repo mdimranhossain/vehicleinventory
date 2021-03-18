@@ -28,11 +28,31 @@ class Init
     public function viAddPage()
     {
         add_menu_page(
-            'Vehicle Inventory',
-            'Vehicle Inventory',
+            'All Inventory',
+            'All Inventory',
             'read',
             'vivehicles',
             [$this, "viVehicles"],
+            '',
+            71
+        );
+        add_submenu_page(
+            'vivehicles',
+            'Add New',
+            'Add New',
+            'manage_options',
+            'add-new',
+            [$this, "viAddNew"],
+            '',
+            71
+        );
+        add_submenu_page(
+            'vivehicles',
+            'Settings',
+            'Settings',
+            'manage_options',
+            'vi-settings',
+            [$this, "viSettings"],
             '',
             71
         );
@@ -51,6 +71,14 @@ class Init
     public function viVehicles()
     {
         include_once($this->viPath . '/template/vivehicles.php');
+    }
+    public function viAddNew()
+    {
+        include_once($this->viPath . '/template/viaddnew.php');
+    }
+    public function viSettings()
+    {
+        include_once($this->viPath . '/template/visettings.php');
     }
 
     public function viActivate()
