@@ -1,0 +1,19 @@
+/*
+ * Styles
+ * @Package: VehicleInventory
+ */
+
+#vehiclelist{
+  width:100%;
+  max-width:1140px;
+  margin:10px auto;
+}
+#vehicles{
+  width:100%;
+  border: 1px solid #ddd;
+}
+#details{
+  width:100%;
+  max-width:540px;
+  margin:0 auto;
+}

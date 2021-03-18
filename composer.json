@@ -1,0 +1,20 @@
+{
+    "name": "mdimranhossain/vehicleinventory",
+    "description": "Manages Vehicle Inventory for auto dealers",
+    "type": "wordpress-plugin",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Md Imran Hossain",
+            "email": "mdimranhossain8@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require":{},
+    "autoload":{
+		"psr-4":{"Inc\\":"./inc"}
+	   },
+    "require-dev": {
+		"phpcompatibility/phpcompatibility-wp": "*"
+    }
+}
