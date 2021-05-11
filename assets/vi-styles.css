@@ -1,0 +1,59 @@
+/*
+ * Styles
+ * @Package: VehicleInventory
+ */
+
+#vehiclelist{
+  width:100%;
+  /* max-width:1140px; */
+  margin:10px auto;
+}
+#vehicles{
+  width:100%;
+  border: 1px solid #ddd;
+}
+#details{
+  width:100%;
+  max-width:540px;
+  margin:0 auto;
+}
+#tabs{
+  padding-left: 0;
+  padding-right: 0;
+}
+.addnewtop,
+.addnewbottom,
+#tabs .tab{
+  background:#222;
+  color:#fff;
+  font-size:18px;
+}
+#tabs .tab a{
+  color:#fff;
+  display: block;
+  padding:10px 5px 10px 15px;
+  text-decoration: none;
+}
+#tabs .tab a:hover,
+#tabs .active{
+  background:#000;
+}
+
+.pricecontent,
+.descriptioncontent,
+.specscontent,
+.additionalcontent,
+.gallerycontent,
+.publishcontent{
+  display: none;
+}
+.specscontent label, .specscontent input{
+  display: inline-block!important;
+  width:auto;
+}
+.message{
+  position:absolute;
+  top:20px;
+  right:20px;
+  z-index: 9;
+}

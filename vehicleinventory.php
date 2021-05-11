@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @wordpress-plugin
  * Plugin Name: VehicleInventory

@@ -11,96 +11,188 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
-use Inc\VehicleData;
-$viData=new VehicleData();
-$viVehicles=$viData->viVehicleList();
-$viVehicles=json_decode($viVehicles);
 
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
+global $wpdb;
+$table = $wpdb->prefix.'inventory';
+$query = $wpdb->prepare("SELECT * FROM {$table} WHERE %d", 1);
+$vehicles = $wpdb->get_results($query);
+//print_r($vehicles);
 ?>
-<div id="placeholder">
-	<h2>Vehicle List</h2>
+<div id="vehicleinventory" class="container-fluid">
+    <div class="message"></div>
+	<h2>Vehicle List (<a href="<?php echo esc_url(home_url('bbn-inventory')); ?>" target="_blank"> Public View</a>)</h2>
 	<div id="vehiclelist" class="table-responsive">
 		<table id="vehicles" class="display table table-bordered table-striped">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Vehiclename</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>Website</th>
+					<th>Title</th>
+					<th>Sale Price</th>
+					<th>MSRP</th>
+					<th>Description</th>
+					<th>Condition</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php
-			if($viVehicles){
-				foreach($viVehicles as $viVehicle){
-					echo '<tr><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->id.'</a></td><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->name.'</a></td><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->vehiclename.'</a></td><td>'.$viVehicle->email.'</td><td>'.$viVehicle->phone.'</td><td>'.$viVehicle->website.'</td></tr>';
+			if($vehicles){
+				foreach($vehicles as $vehicle){
+					echo '<tr id="row'.$vehicle->id.'"><td><a target="_blank" class="dlink" dataid="'.$vehicle->id.'" href="/bbn-inventory/'.$vehicle->slug.'">'.$vehicle->make.' '.$vehicle->model.' '.$vehicle->additional.'</a></td><td>'.$vehicle->salePrice.'</td><td>'.$vehicle->msrp.'</td><td>'.$vehicle->description.'</td><td>'.$vehicle->vehicleCondition.'</td><td><a href="/wp-admin/admin.php?page=viedit&id='.$vehicle->id.'" type="button" class="btn btn-warning btn-sm btn-edit" title="Edit" ><i class="fa fa-pencil"></i></a><button data-toggle="modal" data-target="#deletemodal" data-id="'.$vehicle->id.'" data-featured="'.$vehicle->featuredid.'" data-gallery="'.rtrim($vehicle->galleryfiles,',').'" type="button" title="Delete" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i></button></td></tr>';
 				}
 			}
 			?>
 			</tbody>
 			<tfoot>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Vehiclename</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>Website</th>
+        <th>Title</th>
+        <th>Sale Price</th>
+        <th>MSRP</th>
+        <th>Description</th>
+        <th>Condition</th>
+        <th>Actions</th>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
-	<div id="vehicledetails" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h2 class="modal-title">Vehicle Details</h2>
-      </div>
-      <div class="modal-body">
-        <div id="details" class="table-responsive">
-
-        </div>
-      </div>
-    </div>
-
-  </div>
 </div>
+
+<?php
+//    $nonce = wp_create_nonce("viDeleteAttachment");
+//     $link = admin_url('admin-ajax.php?action=viDeleteAttachment&post_id=11&nonce='.$nonce);
+//     echo '<a class="viDelete" target="_blank" data-nonce="' . $nonce . '" data-post_id="11" href="' . $link . '">Delete</a>';
+?>
+
+<!-- delete modal -->
+<div id="deletemodal" class="modal fade" role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                
+            </div>
+            <div class="modal-body">
+                <form id="deleteform" action="" method="post" accept-charset="utf-8">
+                    <input type="hidden" id="id" name="post_id" />
+                    <input type="hidden" id="action" name="action" value="viDeleteAttachment" />
+                    <input type="hidden" id="vehicle" name="vehicle" value="delete" />
+                    <input type="hidden" id="featured" name="featured" />
+					<input type="hidden" id="gallery" name="gallery" />
+<input type="hidden" name="nonce" id="nonce" value="<?php echo wp_create_nonce( 'viDeleteAttachment' ); ?>" />
+
+                    
+                    <p class="confirm">Are you sure to delete this vehicle?<br/><button class="btn btn-primary btn-sm submit" type="submit">Yes</button></p>
+                </form>
+            </div>
+        </div>
+
+    </div>
 </div>
 <script>
   jQuery(document).ready(function($){
 	$('#vehicles').DataTable({
                 responsive: true,
                 });
-      $(document).on('click','.dlink', function(e){
+	
+	// delete action
+	$('.btn-delete').on('click', function() {
+        var modaltitle = "Delete Vehicle";
+        var dataid = $(this).data('id');
+        var featured = $(this).data('featured');
+        var gallery = $(this).data('gallery');
+        $('#deletemodal .modal-title').text(modaltitle);
+        $('#deletemodal #id').val(dataid);
+        $('#featured').val(featured);
+        $('#gallery').val(gallery);
+    });
+
+
+    $('#deleteform').on('submit', function(e) {
         e.preventDefault();
-        var id=$(this).attr('dataid');
-        var endpoint = "<?php echo viurl("/endpoint.php");?>";
+        var deletemedia = "<?php echo admin_url('admin-ajax.php');?>";
+        var deleteinventory = "<?php echo viurl("/vehicle.php");?>";
+        var form = document.getElementById('deleteform');
+
         $.ajax({
+            url: deletemedia,
+            method: "POST",
+            data: new FormData(form),
+            contentType: false,
+            cache: false,
+            processData: false,
             dataType: "json",
-            url: endpoint+"?id="+id,
-          })
-            .done(function(data){
-              var vehicle ='';
-               vehicle +='<table class="table table-bordered table-striped" border="1">';
-               vehicle +='<tr><td>ID:</td><td>' + data.id + '</td></tr>';
-               vehicle +='<tr><td>Name:</td><td>' + data.name + '</td></tr>';
-               vehicle +='<tr><td>VehicleName:</td><td>' + data.vehiclename + '</td></tr>';
-               vehicle +='<tr><td>Email:</td><td>' + data.email + '</td></tr>';
-               vehicle +='<tr><td>Phone:</td><td>' + data.phone + '</td></tr>';
-               vehicle +='<tr><td>Website:</td><td>' + data.website + '</td></tr>';
-               vehicle +='<tr><td>Address:</td><td>Street- ' + data.address.street + '<br>Suite- ' + data.address.suite + '<br>City- ' + data.address.city + '<br>ZipCode- ' + data.address.zipcode + '<br>Latitude- ' + data.address.geo.lat + '<br>' + 'Longitude- ' + data.address.geo.lng + '</td></tr>';
-               vehicle +='<tr><td>Company:</td><td>Name- ' + data.company.name + '<br>catchPhrase- ' + data.company.catchPhrase + '<br>bs- ' + data.company.bs + '</td></tr>';
-               vehicle +='</table>';
-              $('#details').html(vehicle);
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                    if (data.errors) {
+                        html = '<div class="alert alert-danger">';
+                        for (var count = 0; count < data.errors
+                            .length; count++) {
+                            html += '<p>' + data.errors[count] + '</p>';
+                        }
+                        html += '</div>';
+                    }
+                    if (data.message) {
+                        html = '<div class="alert alert-success">' + data
+                            .message + '</div>';
+
+                        setTimeout(function () {
+                            $('#deletemodal .close').trigger('click');
+                        }, 500);
+
+                        $('.message').html(html);
+
+                        setTimeout(function () {
+                            $('.message').fadeOut('slow');
+                        }, 1000);
+                    }
+            }
+        }).done(function(){
+            $.ajax({
+            url: deleteinventory,
+            method: "POST",
+            data: new FormData(form),
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                    if (data.errors) {
+                        html = '<div class="alert alert-danger">';
+                        for (var count = 0; count < data.errors
+                            .length; count++) {
+                            html += '<p>' + data.errors[count] + '</p>';
+                        }
+                        html += '</div>';
+                    }
+                    if (data.message) {
+                        html = '<div class="alert alert-success">' + data
+                            .message + '</div>';
+
+                        setTimeout(function () {
+                            $('#deletemodal .close').trigger('click');
+                        }, 500);
+
+                        $('.message').html(html);
+                        $('.message').show(500);
+
+                        setTimeout(function () {
+                            $('.message').fadeOut('slow');
+                            $('#row'+data.vehicle.id).fadeOut('slow');
+                        }, 1000);
+                    }
+                }
             });
+
         });
+
+    });
   });
 </script>
 <div style="display: block; clear: both;"></div>

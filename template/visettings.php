@@ -11,97 +11,35 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
-use Inc\VehicleData;
-$viData=new VehicleData();
-$viVehicles=$viData->viVehicleList();
-$viVehicles=json_decode($viVehicles);
+use Inc\Vehicle;
+$vehicle = new Vehicle();
 
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
 ?>
-<div id="placeholder">
-	<h2>Vehicle List</h2>
-	<div id="vehiclelist" class="table-responsive">
-		<table id="vehicles" class="display table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Vehiclename</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>Website</th>
-				</tr>
-			</thead>
-			<tbody>
-        Options for Vehicle Inventory
-			<?php
-			// if($viVehicles){
-			// 	foreach($viVehicles as $viVehicle){
-			// 		echo '<tr><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->id.'</a></td><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->name.'</a></td><td><a class="dlink" dataid="'.$viVehicle->id.'" href="#" data-toggle="modal" data-target="#vehicledetails">'.$viVehicle->vehiclename.'</a></td><td>'.$viVehicle->email.'</td><td>'.$viVehicle->phone.'</td><td>'.$viVehicle->website.'</td></tr>';
-			// 	}
-			// }
-			?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Vehiclename</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>Website</th>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
-	<div id="vehicledetails" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h2 class="modal-title">Vehicle Details</h2>
+<div id="settings">
+	<h2>Vehicle Inventory Settings</h2>
+	<div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <form id="visettings" action="" method="POST">
+          <input type="hidden" name="user_id" value="">
+          <div class="form-group">
+            <label class="control-label" for="vi_slug">Inventory Slug</label>
+            <div class="row">
+              <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="" placeholder="bbn-inventory" />
+            </div>
+            
+          </div>
+        </form>
+      
       </div>
-      <div class="modal-body">
-        <div id="details" class="table-responsive">
-
-        </div>
-      </div>
+    
     </div>
 
-  </div>
+	</div>
+  
 </div>
-</div>
-<script>
-  jQuery(document).ready(function($){
-	$('#vehicles').DataTable({
-                responsive: true,
-                });
-      $(document).on('click','.dlink', function(e){
-        e.preventDefault();
-        var id=$(this).attr('dataid');
-        var endpoint = "<?php echo viurl("/endpoint.php");?>";
-        $.ajax({
-            dataType: "json",
-            url: endpoint+"?id="+id,
-          })
-            .done(function(data){
-              var vehicle ='';
-               vehicle +='<table class="table table-bordered table-striped" border="1">';
-               vehicle +='<tr><td>ID:</td><td>' + data.id + '</td></tr>';
-               vehicle +='<tr><td>Name:</td><td>' + data.name + '</td></tr>';
-               vehicle +='<tr><td>VehicleName:</td><td>' + data.vehiclename + '</td></tr>';
-               vehicle +='<tr><td>Email:</td><td>' + data.email + '</td></tr>';
-               vehicle +='<tr><td>Phone:</td><td>' + data.phone + '</td></tr>';
-               vehicle +='<tr><td>Website:</td><td>' + data.website + '</td></tr>';
-               vehicle +='<tr><td>Address:</td><td>Street- ' + data.address.street + '<br>Suite- ' + data.address.suite + '<br>City- ' + data.address.city + '<br>ZipCode- ' + data.address.zipcode + '<br>Latitude- ' + data.address.geo.lat + '<br>' + 'Longitude- ' + data.address.geo.lng + '</td></tr>';
-               vehicle +='<tr><td>Company:</td><td>Name- ' + data.company.name + '<br>catchPhrase- ' + data.company.catchPhrase + '<br>bs- ' + data.company.bs + '</td></tr>';
-               vehicle +='</table>';
-              $('#details').html(vehicle);
-            });
-        });
-  });
-</script>
+
 <div style="display: block; clear: both;"></div>

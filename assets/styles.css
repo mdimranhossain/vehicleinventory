@@ -1,0 +1,94 @@
+/*
+ * Styles
+ * @Package: VehicleInventory
+ */
+.container{
+  margin-top: 5px!important;
+  margin-bottom: 5px!important;
+}
+ .vehicle{
+   background: #fff;
+   margin: 5px auto !important;
+ }
+
+.vehicle-title{
+  background: #ed2025;
+  color:#fff;
+  padding:10px;
+}
+
+.vehicle-title ul{
+  list-style: none;
+  float: right;
+}
+
+.vehicle-title ul .phone{
+  padding: 0 30px;
+  font-weight: bold;
+}
+
+.vehicle-title ul li{
+  display: inline-block;
+  color:#fff
+}
+.vehicle-title ul li a,.vehicle-title h3 a{
+  color:#fff
+}
+
+.vehicle-title ul li a:hover,.vehicle-title h3 a:hover{
+  text-decoration: none;
+}
+.dealer h4{
+  padding: 20px 10px;
+}
+.dealer a{
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+.dealer a:hover{
+  background: #ed2025;
+  color: #fff;
+  text-decoration: none;
+}
+
+.slider{
+  min-height:204px;
+}
+
+.slider img{
+  max-width: 100%;
+}
+.moreinfo{
+  font-size:28px;
+}
+.moreinfo a:hover{
+  text-decoration: none;
+  color:#ed2025
+}
+.gallery{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gallery li{
+  display: inline-block;
+  vertical-align: top;
+  margin-left:20px;
+}
+.gallery img{
+  max-width: 210px;
+}
+
+.contact{
+  box-shadow: 0 0 1rem rgba(0,0,0,.175) !important;
+}
+.contact p{
+  font-size: 16px;
+}
+.bx-wrapper{
+  background:none;
+  border:none;
+  box-shadow:none;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+}
