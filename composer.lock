@@ -63,6 +63,10 @@
                 "phpcs",
                 "standards"
             ],
+            "support": {
+                "issues": "https://github.com/PHPCompatibility/PHPCompatibility/issues",
+                "source": "https://github.com/PHPCompatibility/PHPCompatibility"
+            },
             "time": "2019-12-27T09:44:58+00:00"
         },
         {
@@ -115,6 +119,10 @@
                 "polyfill",
                 "standards"
             ],
+            "support": {
+                "issues": "https://github.com/PHPCompatibility/PHPCompatibilityParagonie/issues",
+                "source": "https://github.com/PHPCompatibility/PHPCompatibilityParagonie"
+            },
             "time": "2021-02-15T10:24:51+00:00"
         },
         {
@@ -123,12 +131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git",
-                "reference": "b7dc0cd7a8f767ccac5e7637550ea1c50a67b09e"
+                "reference": "8c09ff3d057942ea4ca2ec7494f72c33c8d7f863"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/b7dc0cd7a8f767ccac5e7637550ea1c50a67b09e",
-                "reference": "b7dc0cd7a8f767ccac5e7637550ea1c50a67b09e",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibilityWP/zipball/8c09ff3d057942ea4ca2ec7494f72c33c8d7f863",
+                "reference": "8c09ff3d057942ea4ca2ec7494f72c33c8d7f863",
                 "shasum": ""
             },
             "require": {
@@ -142,6 +150,7 @@
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || This Composer plugin will sort out the PHP_CodeSniffer 'installed_paths' automatically.",
                 "roave/security-advisories": "dev-master || Helps prevent installing dependencies with known security issues."
             },
+            "default-branch": true,
             "type": "phpcodesniffer-standard",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -165,7 +174,11 @@
                 "standards",
                 "wordpress"
             ],
-            "time": "2021-02-15T12:58:46+00:00"
+            "support": {
+                "issues": "https://github.com/PHPCompatibility/PHPCompatibilityWP/issues",
+                "source": "https://github.com/PHPCompatibility/PHPCompatibilityWP"
+            },
+            "time": "2021-04-12T18:59:20+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -173,12 +186,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "18c27ede91c600e40a292a2d8d6a521a3ae6d2a2"
+                "reference": "fde816c3c3229af6440ed542df00d37a7bc6a261"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/18c27ede91c600e40a292a2d8d6a521a3ae6d2a2",
-                "reference": "18c27ede91c600e40a292a2d8d6a521a3ae6d2a2",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/fde816c3c3229af6440ed542df00d37a7bc6a261",
+                "reference": "fde816c3c3229af6440ed542df00d37a7bc6a261",
                 "shasum": ""
             },
             "require": {
@@ -190,6 +203,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
+            "default-branch": true,
             "bin": [
                 "bin/phpcs",
                 "bin/phpcbf"
@@ -216,7 +230,12 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2021-03-18T00:39:21+00:00"
+            "support": {
+                "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
+                "source": "https://github.com/squizlabs/PHP_CodeSniffer",
+                "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
+            },
+            "time": "2021-04-28T03:23:55+00:00"
         }
     ],
     "aliases": [],
@@ -225,5 +244,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

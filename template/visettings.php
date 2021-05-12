@@ -29,17 +29,34 @@ function viurl(string $viLink){
             <label class="control-label" for="vi_slug">Inventory Slug</label>
             <div class="row">
               <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="" placeholder="bbn-inventory" />
+              <button type="button" id="saveslug" class="btn btn-primary btn-md">Save</button>
             </div>
-            
           </div>
         </form>
-      
       </div>
-    
     </div>
-
 	</div>
-  
 </div>
-
 <div style="display: block; clear: both;"></div>
+<script>
+		jQuery(document).ready(function($){
+			$('#saveslug').on('click', function(e){
+      e.preventDefault();
+      var endpoint = "<?php echo viurl("/endpoint.php");?>";
+      $.ajax({
+            url:endpoint,
+            method: "POST",
+            data: new FormData(document.getElementById('visettings')),
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                  
+            }
+        });
+      });
+		});
+		</script>

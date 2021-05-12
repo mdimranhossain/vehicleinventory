@@ -11,11 +11,11 @@ namespace Inc;
 class Vehicle
 {   private $db;
     private $table;
-    private $setting;
 
-    public function __construct($db)
+    public function __construct()
     {
-        $this->db = $db;
+        global $wpdb;
+        $this->db = $wpdb;
         $this->table = $this->db->prefix.'inventory';
     }
 

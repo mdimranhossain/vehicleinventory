@@ -13,14 +13,15 @@ get_header();
 			$total = $wpdb->get_var($wpdb->prepare("SELECT COUNT('id') FROM {$table} WHERE %d", 1));
 			$per_page = 10;
 			if ($page > 1) {
-				$offset = $page * $per_page - $per_page;
+				$offset = ($page- 1) * $per_page ;
 			} else {
-				$offset = $page;
+				$offset = 0;
 			}
 
-			$query = $wpdb->prepare("SELECT * FROM {$table} WHERE %d ORDER BY id DESC LIMIT $per_page OFFSET $offset", 1);
+			$query = $wpdb->prepare("SELECT * FROM {$table} WHERE %d ORDER BY id DESC LIMIT $offset,$per_page", 1);
+            //echo $query;
 			$vehicles = $wpdb->get_results($query);
-			// print_r($vehicles);
+            //print_r($vehicles);
 			// exit;
 			
 			foreach($vehicles as $vehicle){

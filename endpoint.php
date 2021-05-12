@@ -10,10 +10,11 @@ if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
 
-use Inc\VehicleData;
+use Inc\Setting;
 
-$viVehicleData = new VehicleData();
+$setting = new Setting();
 
-if (!empty($_GET['id'])) {
-    echo $viVehicleData->viVehicleDetails($_GET['id']);
+if(!empty($_REQUEST['vi_slug'])){
+    $slug = trim($_REQUEST['vi_slug']);
+    echo $setting->viUpdateSlug($slug);
 }
