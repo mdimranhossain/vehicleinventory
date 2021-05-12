@@ -22,7 +22,8 @@ class Setting
     {
         $data['slug'] = strtolower($slug);
         update_option('vi_slug', $data['slug']);
-        flush_rewrite_rules(false);
+        
+        
         $data['vi_slug'] = get_option('vi_slug');
 
         return json_encode($data);
