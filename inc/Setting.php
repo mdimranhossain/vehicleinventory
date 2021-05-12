@@ -21,8 +21,8 @@ class Setting
     public function viUpdateSlug($slug): string
     {
         global $wp_rewrite;
-        
-        $data['new'] = trim($slug);
+
+        $data['new'] = strtolower(trim($slug));
         update_option('vi_slug', $data['new']);
         $wp_rewrite->flush_rules(false);
         $data['vi_slug'] = get_option('vi_slug');
