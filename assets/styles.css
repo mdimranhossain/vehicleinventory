@@ -20,19 +20,30 @@
 .vehicle-title ul{
   list-style: none;
   float: right;
+  margin: 0;
+  padding: 0;
 }
 
 .vehicle-title ul .phone{
   padding: 0 30px;
   font-weight: bold;
 }
-
+.vehicle-title ul .print{
+  margin-top: 10px;
+}
 .vehicle-title ul li{
   display: inline-block;
-  color:#fff
+  vertical-align: top;
+}
+
+.vehicle-title ul li i{
+  display: inline-block;
+  color: #fff!important;
+  font-size: 28px;
+  font-weight: bold;
 }
 .vehicle-title ul li a,.vehicle-title h3 a{
-  color:#fff
+  color:#fff!important;
 }
 
 .vehicle-title ul li a:hover,.vehicle-title h3 a:hover{
