@@ -3,9 +3,9 @@
 * visettings
 * @Package: VehicleInventory
 */
-require_once( ABSPATH . 'wp-load.php' );
+//require_once( ABSPATH . 'wp-load.php' );
 require_once( ABSPATH . 'wp-admin/admin.php' );
-require_once( ABSPATH . 'wp-admin/admin-header.php' );
+
 
  $viAutoload = dirname(__FILE__) . '/vendor/autoload.php';
 if (file_exists($viAutoload)) {
@@ -22,14 +22,19 @@ function viurl(string $viLink){
 if(!empty($_REQUEST['vi_slug'])){
   $slug = trim($_REQUEST['vi_slug']);
   $setting->viUpdateSlug($slug);
-}
-global $wp_rewrite;
-$permalink_structure = get_option( 'permalink_structure' );
-$wp_rewrite->set_permalink_structure( $permalink_structure );
+  global $wp_rewrite;
+  $permalink_structure = get_option( 'permalink_structure' );
+  $wp_rewrite->set_permalink_structure( $permalink_structure );
 
-//$structure_updated = true;
-$using_index_permalinks = $wp_rewrite->using_index_permalinks();
+
+  $using_index_permalinks = $wp_rewrite->using_index_permalinks();
+  echo '<script>location.reload();</script>';
+
+}
+
 flush_rewrite_rules();
+
+require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 <div id="settings">
 	<h2>Vehicle Inventory Settings</h2>
