@@ -10,6 +10,11 @@ if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
 
+define( 'SHORTINIT', true );
+require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+//require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-admin/admin.php' );
+require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-includes/rewrite.php' );
+
 use Inc\Setting;
 
 $setting = new Setting();

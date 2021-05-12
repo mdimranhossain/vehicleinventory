@@ -11,9 +11,9 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
-use Inc\Vehicle;
-$vehicle = new Vehicle();
-
+use Inc\Setting;
+$setting = new Setting();
+$slug = $setting->viInventorySlug();
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
@@ -28,7 +28,7 @@ function viurl(string $viLink){
           <div class="form-group">
             <label class="control-label" for="vi_slug">Inventory Slug</label>
             <div class="row">
-              <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="" placeholder="bbn-inventory" />
+              <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="<?php echo $slug;?>" />
               <button type="button" id="saveslug" class="btn btn-primary btn-md">Save</button>
             </div>
           </div>

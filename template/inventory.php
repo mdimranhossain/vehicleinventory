@@ -3,6 +3,8 @@
  * Template Name: Inventory List
  */
 get_header();
+$slug = get_option('vi_slug');
+//$slug = get_query_var($slug);
 ?>
 <script>document.title = "All Inventory";</script>
 	<div id="inventory">
@@ -30,7 +32,7 @@ get_header();
 			<div class="vehicle container">
 	      		<div class="row vehicle-title">
 	      			<div class="col-sm-6">
-	      				<h3><a href="<?php echo esc_url(home_url()).'/bbn-inventory/'.$vehicle->slug; ?>"><?php echo $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional; ?></a></h3>
+	      				<h3><a href="<?php echo esc_url(home_url()).'/'.$slug.'/'.$vehicle->slug; ?>"><?php echo $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional; ?></a></h3>
 	      			</div>
 	      			<div class="col-sm-6">
 						<ul>
@@ -60,7 +62,7 @@ get_header();
 	      			<div class="col-sm-4">
 	      				<div class="vehicle-description">
 	      					<p><?php echo $vehicle->description; ?></p>
-							  <h2 class="moreinfo"><a href="<?php echo esc_url(home_url()).'/bbn-inventory/'.$vehicle->slug; ?>">View More Info</a></h2>
+							  <h2 class="moreinfo"><a href="<?php echo esc_url(home_url()).'/'.$slug.'/'.$vehicle->slug; ?>">View More Info</a></h2>
 	      				</div>
 	      			</div>
 

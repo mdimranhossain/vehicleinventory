@@ -12,6 +12,10 @@ if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
 
+use Inc\Setting;
+$setting = new Setting();
+$slug = $setting->viInventorySlug();
+
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
@@ -23,7 +27,7 @@ $vehicles = $wpdb->get_results($query);
 ?>
 <div id="vehicleinventory" class="container-fluid">
     <div class="message"></div>
-	<h2>Vehicle List (<a href="<?php echo esc_url(home_url('bbn-inventory')); ?>" target="_blank"> Public View</a>)</h2>
+	<h2>Vehicle List (<a href="<?php echo esc_url(home_url($slug)); ?>" target="_blank"> Public View</a>)</h2>
 	<div id="vehiclelist" class="table-responsive">
 		<table id="vehicles" class="display table table-bordered table-striped">
 			<thead>
@@ -40,7 +44,7 @@ $vehicles = $wpdb->get_results($query);
 			<?php
 			if($vehicles){
 				foreach($vehicles as $vehicle){
-					echo '<tr id="row'.$vehicle->id.'"><td><a target="_blank" class="dlink" dataid="'.$vehicle->id.'" href="/bbn-inventory/'.$vehicle->slug.'">'.$vehicle->make.' '.$vehicle->model.' '.$vehicle->additional.'</a></td><td>'.$vehicle->salePrice.'</td><td>'.$vehicle->msrp.'</td><td>'.$vehicle->description.'</td><td>'.$vehicle->vehicleCondition.'</td><td><a href="/wp-admin/admin.php?page=viedit&id='.$vehicle->id.'" type="button" class="btn btn-warning btn-sm btn-edit" title="Edit" ><i class="fa fa-pencil"></i></a><button data-toggle="modal" data-target="#deletemodal" data-id="'.$vehicle->id.'" data-featured="'.$vehicle->featuredid.'" data-gallery="'.rtrim($vehicle->galleryfiles,',').'" type="button" title="Delete" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i></button></td></tr>';
+					echo '<tr id="row'.$vehicle->id.'"><td><a target="_blank" class="dlink" dataid="'.$vehicle->id.'" href="/'.$slug.'/'.$vehicle->slug.'">'.$vehicle->make.' '.$vehicle->model.' '.$vehicle->additional.'</a></td><td>'.$vehicle->salePrice.'</td><td>'.$vehicle->msrp.'</td><td>'.$vehicle->description.'</td><td>'.$vehicle->vehicleCondition.'</td><td><a href="/wp-admin/admin.php?page=viedit&id='.$vehicle->id.'" type="button" class="btn btn-warning btn-sm btn-edit" title="Edit" ><i class="fa fa-pencil"></i></a><button data-toggle="modal" data-target="#deletemodal" data-id="'.$vehicle->id.'" data-featured="'.$vehicle->featuredid.'" data-gallery="'.rtrim($vehicle->galleryfiles,',').'" type="button" title="Delete" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash"></i></button></td></tr>';
 				}
 			}
 			?>

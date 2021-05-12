@@ -14,6 +14,7 @@ class Init
     private $viPath;
     private $db;
     private $table;
+    private $vi_slug;
     
     public function __construct()
     {
@@ -23,12 +24,15 @@ class Init
 
         $this->viUrl = plugins_url("", dirname(__FILE__));
         $this->viPath = dirname(__FILE__, 2);
+        
+        $this->vi_slug = !empty(get_option('vi_slug'))?get_option('vi_slug'):'inventory';
+
     }
 
     public function start()
     {
         add_action('admin_enqueue_scripts', [$this, 'viAdminAssets']);
-        if (strpos($_SERVER['REQUEST_URI'], "bbn-inventory") !== false){
+        if (strpos($_SERVER['REQUEST_URI'], $this->vi_slug) !== false){
         add_action('wp_enqueue_scripts', [$this, 'viAssets']);
         }
         add_action('admin_menu', [$this, 'viAddPage']);
@@ -36,17 +40,17 @@ class Init
         add_action( 'wp_ajax_viDeleteAttachment', [$this, 'viDeleteAttachment']);
 
         add_filter( 'query_vars', function( $query_vars ){
-            $query_vars[] = 'bbn-inventory';
+            $query_vars[] = $this->vi_slug;
             return $query_vars;
         } );
 
         add_action( 'init',  function() {
-            add_rewrite_rule('^bbn-inventory/?([^/]*)/?', 'index.php?bbn-inventory=$matches[1]', 'top');
+            add_rewrite_rule('^'.$this->vi_slug.'/?([^/]*)/?', 'index.php?'.$this->vi_slug.'=$matches[1]', 'top');
         } );
 
         add_action( 'template_redirect', function(){
-            $inventory = get_query_var( 'bbn-inventory' );
-            if (strpos($_SERVER['REQUEST_URI'], "bbn-inventory") !== false && empty($inventory)){
+            $inventory = get_query_var( $this->vi_slug );
+            if (strpos($_SERVER['REQUEST_URI'], $this->vi_slug) !== false && empty($inventory)){
                 include $this->viPath . '/template/inventory.php';
                 die;
             }elseif($inventory){
@@ -163,7 +167,7 @@ class Init
         global $vi_db_version;
         $vi_db_version = '1.0';
         global $vi_slug;
-        $vi_slug = 'bbn-inventory';
+        $vi_slug = $this->vi_slug;
 
         $table = $this->table;
         include_once($this->viPath . '/inc/Database.php');

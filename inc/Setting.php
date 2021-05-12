@@ -1,6 +1,6 @@
 <?php
 /*
-* Vehicle
+* Setting
 * @Package: VehicleInventory
 */
 
@@ -20,13 +20,18 @@ class Setting
 
     public function viUpdateSlug($slug): string
     {
-        global $wp_rewrite;
-
-        $data['new'] = strtolower(trim($slug));
-        update_option('vi_slug', $data['new']);
-        $wp_rewrite->flush_rules(false);
+        $data['slug'] = strtolower($slug);
+        update_option('vi_slug', $data['slug']);
+        flush_rewrite_rules(false);
         $data['vi_slug'] = get_option('vi_slug');
 
         return json_encode($data);
+    }
+
+    public function viInventorySlug(): string
+    {
+
+        $slug= get_option('vi_slug');
+        return $slug;
     }
 }

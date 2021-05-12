@@ -4,7 +4,9 @@
  */
 get_header(); 
 
-$slug = get_query_var('bbn-inventory');
+$slug = get_option('vi_slug');
+$slug = get_query_var($slug);
+
 //echo $inventory;
 global $wpdb;
 $table = $wpdb->prefix.'inventory';
