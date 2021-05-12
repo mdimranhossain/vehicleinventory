@@ -23,6 +23,7 @@ if (file_exists($viAutoload)) {
 use Inc\Init;
 
 $viInit = new Init;
+
 $viInit->start();
 
 register_activation_hook(__FILE__, [$viInit, 'viActivate']);

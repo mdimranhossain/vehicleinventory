@@ -12,8 +12,15 @@ class Init
 {
     private $viUrl;
     private $viPath;
+    private $db;
+    private $table;
+    
     public function __construct()
     {
+        global $wpdb;
+        $this->db = $wpdb;
+        $this->table = $this->db->prefix.'inventory';
+
         $this->viUrl = plugins_url("", dirname(__FILE__));
         $this->viPath = dirname(__FILE__, 2);
     }
@@ -149,9 +156,24 @@ class Init
         include_once($this->viPath . '/template/visettings.php');
     }
 
+    
+
     public function viActivate()
     {
-        //Nothing to do here this case
+        global $vi_db_version;
+        $vi_db_version = '1.0';
+        global $vi_slug;
+        $vi_slug = 'bbn-inventory';
+
+        $table = $this->table;
+        include_once($this->viPath . '/inc/Database.php');
+        $this->db->query($create_table);
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	    dbDelta($create_table);
+
+	    add_option( 'vi_db_version', $vi_db_version );
+        add_option( 'vi_slug', $vi_slug );
     }
 
     public function viDeactivate()

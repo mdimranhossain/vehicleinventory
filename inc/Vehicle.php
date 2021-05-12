@@ -9,32 +9,25 @@ declare(strict_types=1);
 namespace Inc;
 
 class Vehicle
-{
+{   private $db;
     private $table;
-    private $settingTable;
+    private $setting;
 
-    public function __construct()
+    public function __construct($db)
     {
-        // global $wpdb;
-        // $this->table = $wpdb->prefix.'inventory';
-        // $this->settingTable = $wpdb->prefix.'inventory_settings';
+        $this->db = $db;
+        $this->table = $this->db->prefix.'inventory';
     }
 
     public function viList(): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-        $query = $wpdb->prepare("SELECT * FROM {$table} WHERE %d", 1);
-        $vehicles = $wpdb->get_results($query);
+        $query = $this->db->prepare("SELECT * FROM {$this->table} WHERE %d", 1);
+        $vehicles = $this->db->get_results($query);
         return json_encode($vehicles);
-        //return $query;
     }
 
     public function viCreate(): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-
         $input = $_POST;
 
         $data['insert'] = [
@@ -60,15 +53,15 @@ class Vehicle
             'createdAt' => $input['createdAt']
         ];
         $format = array('%s','%s','%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%s','%s');
-        $data['success'] = $wpdb->insert($table,$data['insert'],$format);
+        $data['success'] = $this->db->insert($this->table,$data['insert'],$format);
 
         if($data['success']){
             $data['message'] = "Vehicle Added Successfully.";
         }else{
-            $data['error'] = "Something Went Wrong!!!".$wpdb->last_error;
+            $data['error'] = "Something Went Wrong!!!".$this->db->last_error;
         }
 
-        $data['insertid'] = $wpdb->insert_id;
+        $data['insertid'] = $this->db->insert_id;
 
         return json_encode($data);
     }
@@ -76,9 +69,6 @@ class Vehicle
     // Vehicle Slug
     public function viSlug(): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-
         $data['make'] = '';
         $data['model'] = '';
         $data['additional'] = '';
@@ -96,11 +86,7 @@ class Vehicle
             $data['slug'] .= '-'.str_replace(' ', '-', $data['additional']);
         }
 
-       // $data['slug'] = $input['make'].'-'.$input['model'].'-'.$input['additional'];
- 
-       // $data['count'] = $wpdb->get_results("SELECT count(slug) as total FROM ".$table." WHERE slug LIKE '%".$data['slug']."%'");
-
-       $data['count'] = $wpdb->get_results("SELECT * FROM ".$table." WHERE slug LIKE '%".$data['slug']."%'");
+       $data['count'] = $this->db->get_results("SELECT * FROM ".$this->table." WHERE slug LIKE '%".$data['slug']."%'");
 
         if(count($data['count'])>0){
             $data['slug'] = $data['slug'].count($data['count'])+1;
@@ -114,9 +100,6 @@ class Vehicle
 
     public function viUpdate(): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-
         $input = $_POST;
         $id = $input['id'];
         $data['update'] = [
@@ -143,12 +126,12 @@ class Vehicle
         ];
 
         $where = [ 'id' => $id ];
-        $data['success'] = $wpdb->update($table, $data['update'], $where);
+        $data['success'] = $this->db->update($this->table, $data['update'], $where);
 
         if($data['success']){
             $data['message'] = "Vehicle Updated Successfully.";
         }else{
-            $data['error'] = "Something Went Wrong!!!".$wpdb->last_error;
+            $data['error'] = "Something Went Wrong!!!".$this->db->last_error;
         }
 
        return json_encode($data);
@@ -156,20 +139,15 @@ class Vehicle
 
     public function viDetails(string $id)
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-        $result = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d", $id));
+        $result = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id));
         return $result;
     }
 
     public function viDelete(): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix.'inventory';
-
         $id = $_REQUEST['post_id'];
-        $data['vehicle'] = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d", $id));
-        $data['delete'] = $wpdb->delete($table, ['id' => $id]);
+        $data['vehicle'] = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id));
+        $data['delete'] = $this->db->delete($table, ['id' => $id]);
 
         $data['message'] = '';
         if($data['delete']){
@@ -178,37 +156,4 @@ class Vehicle
         echo json_encode($data);
     }
 
-    public function viVehicleResult(): string
-    {
-        $cUrl = curl_init();
-        curl_setopt($cUrl, CURLOPT_URL, $this->viRequestUrl);
-        curl_setopt($cUrl, CURLOPT_HTTPGET, true);
-        curl_setopt($cUrl, CURLOPT_RETURNTRANSFER, true);
-        $viResult = curl_exec($cUrl);
-        $status = curl_getinfo($cUrl, CURLINFO_HTTP_CODE);
-        curl_close($cUrl);
-
-        if ($status === 200 && !empty($viResult)) {
-            file_put_contents($this->viCache, $viResult);
-            return $viResult;
-        }
-
-        if (file_exists($this->viCache)) {
-            return file_get_contents($this->viCache);
-        }
-
-        $this->viCache = dirname(__FILE__, 2) . "/cache/vehiclelist.json";
-        if (file_exists($this->viCache)) {
-            $allvehicles = json_decode(file_get_contents($this->viCache), true);
-            if (isset($allvehicles[$this->id])) {
-                return json_encode($allvehicles[$this->id]);
-            }
-        }
-        return "[]";
-    }
-
-    public function viVehicleList(): string
-    {
-        return $this->viVehicleResult();
-    }
 }

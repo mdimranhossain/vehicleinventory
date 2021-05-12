@@ -22,7 +22,6 @@ function viurl(string $viLink){
 <div id="vehicle">
 	<h2>Add New Vehicle</h2>
   <?php
-  //$vehicle = [];
   global $wpdb;
   $table = $wpdb->prefix.'inventory';
 
@@ -220,7 +219,6 @@ function checkslug(){
 jQuery(document).ready(function($){
     $('#visave').on('click', function(e){
       e.preventDefault();
-      //$('#vipublish').trigger("click");
       var endpoint = "<?php echo viurl("/vehicle.php");?>";
       $.ajax({
             url:endpoint,
@@ -232,30 +230,6 @@ jQuery(document).ready(function($){
             dataType: "json",
             success: function(data) {
                 console.log(data);
-                var html = '';
-                    // if (data.errors) {
-                    //     html = '<div class="alert alert-danger">';
-                    //     for (var count = 0; count < data.errors
-                    //         .length; count++) {
-                    //         html += '<p>' + data.errors[count] + '</p>';
-                    //     }
-                    //     html += '</div>';
-                    // }
-                    // if (data.message) {
-                    //     html = '<div class="alert alert-success">' + data
-                    //         .message + '</div>';
-                    //    // $('#vehicleform')[0].reset();
-
-                    //     setTimeout(function () {
-                    //         $('.close').trigger('click');
-                    //     }, 2000);
-
-                    //     $('.message').html(html);
-
-                    //     setTimeout(function () {
-                    //     $('.alert').hide();
-                    //     }, 5000);
-                    // }
             }
         });
     });
