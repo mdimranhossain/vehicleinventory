@@ -14,8 +14,8 @@ if (file_exists($viAutoload)) {
 
 use Inc\Setting;
 $setting = new Setting();
-$slug = $setting->viInventorySlug();
-
+$options = $setting->viInventoryOptions();
+$slug = $options['slug'];
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
@@ -26,7 +26,10 @@ $vehicles = $wpdb->get_results($query);
 //print_r($vehicles);
 ?>
 <div id="vehicleinventory" class="container-fluid">
-    <div class="message"></div>
+    <div class="message">
+    <div class="image"></div>
+    <div class="inventory"></div>
+    </div>
 	<h2>Vehicle List (<a href="<?php echo esc_url(home_url($slug)); ?>" target="_blank"> Public View</a>)</h2>
 	<div id="vehiclelist" class="table-responsive">
 		<table id="vehicles" class="display table table-bordered table-striped">
@@ -84,8 +87,8 @@ $vehicles = $wpdb->get_results($query);
                     <input type="hidden" id="id" name="post_id" />
                     <input type="hidden" id="action" name="action" value="viDeleteAttachment" />
                     <input type="hidden" id="vehicle" name="vehicle" value="delete" />
-                    <input type="hidden" id="featured" name="featured" />
-					<input type="hidden" id="gallery" name="gallery" />
+                    <input type="hidden" id="featuredid" name="featuredid" />
+					<input type="hidden" id="galleryfiles" name="galleryfiles" />
 <input type="hidden" name="nonce" id="nonce" value="<?php echo wp_create_nonce( 'viDeleteAttachment' ); ?>" />
 
                     
@@ -109,9 +112,10 @@ $vehicles = $wpdb->get_results($query);
         var featured = $(this).data('featured');
         var gallery = $(this).data('gallery');
         $('#deletemodal .modal-title').text(modaltitle);
-        $('#deletemodal #id').val(dataid);
-        $('#featured').val(featured);
-        $('#gallery').val(gallery);
+        $('#deletemodal #id').attr('value',dataid);
+        $('#deletemodal #featuredid').attr('value',featured);
+        $('#deletemodal #galleryfiles').attr('value',gallery);
+        //console.log(gallery);
     });
 
 
@@ -140,60 +144,31 @@ $vehicles = $wpdb->get_results($query);
                         }
                         html += '</div>';
                     }
-                    if (data.message) {
-                        html = '<div class="alert alert-success">' + data
-                            .message + '</div>';
-
-                        setTimeout(function () {
+                    setTimeout(function () {
                             $('#deletemodal .close').trigger('click');
                         }, 500);
+                    if (data.message.image) {
+                        html = '<div class="alert alert-success">' + data.message.image + '</div>';
 
-                        $('.message').html(html);
+                        $('.message .image').html(html);
 
                         setTimeout(function () {
-                            $('.message').fadeOut('slow');
+                            $('.message .image').fadeOut('slow');
                         }, 1000);
+                    }
+
+                    if (data.message.inventory) {
+                        html = '<div class="alert alert-success">' + data.message.inventory + '</div>';
+
+                        $('.message .inventory').html(html);
+                        $('.message .inventory').show(500);
+
+                        setTimeout(function () {
+                            $('.message  .inventory').fadeOut('slow');
+                            $('#row'+data.id).fadeOut('slow');
+                        }, 1500);
                     }
             }
-        }).done(function(){
-            $.ajax({
-            url: deleteinventory,
-            method: "POST",
-            data: new FormData(form),
-            contentType: false,
-            cache: false,
-            processData: false,
-            dataType: "json",
-            success: function(data) {
-                console.log(data);
-                var html = '';
-                    if (data.errors) {
-                        html = '<div class="alert alert-danger">';
-                        for (var count = 0; count < data.errors
-                            .length; count++) {
-                            html += '<p>' + data.errors[count] + '</p>';
-                        }
-                        html += '</div>';
-                    }
-                    if (data.message) {
-                        html = '<div class="alert alert-success">' + data
-                            .message + '</div>';
-
-                        setTimeout(function () {
-                            $('#deletemodal .close').trigger('click');
-                        }, 500);
-
-                        $('.message').html(html);
-                        $('.message').show(500);
-
-                        setTimeout(function () {
-                            $('.message').fadeOut('slow');
-                            $('#row'+data.vehicle.id).fadeOut('slow');
-                        }, 1000);
-                    }
-                }
-            });
-
         });
 
     });

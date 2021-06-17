@@ -62,6 +62,7 @@ function viurl(string $viLink){
   //$format = ['%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%s','%s'];
   $where = [ 'id' => $id ];
   $wpdb->update($table, $data, $where);
+
     if($id){
       $url='admin.php?page=viedit&id='.$id;
       echo "<script>location.href = '".$url."'</script>";
@@ -73,7 +74,7 @@ function viurl(string $viLink){
     <form id="vehicleform" action="" method="POST" enctype="multipart/form-data">
     <div class="container-fluid">
       <div class="row">
-    <div class="col-sm-12 addnewtop"><h2>Update</h2></div>
+    <div class="col-sm-12 addnewtop"><div class="col-sm-6"><h2>Update</h2></div><div id="message" class="col-sm-6"></div></div>
     <div id="tabs" class="col-sm-3">
       <div class="tab title active"><a href="#">Title</a></div>
       <div class="tab price"><a href="#">Price</a></div>
@@ -89,18 +90,18 @@ function viurl(string $viLink){
       <input type="hidden" name="id" id="id" value="<?php echo !empty($vehicle->id)?$vehicle->id:'';?>" />
         <div class="form-group">
           <label for="make" class="control-label">Make</label>
-          <input name="make" id="make" class="form-control" onKeyUp="checkslug();" value="<?php echo !empty($vehicle->make)?$vehicle->make:'';?>" placeholder="Make" />
+          <input name="make" id="make" class="form-control" onBlur="checkslug();" value="<?php echo !empty($vehicle->make)?$vehicle->make:'';?>" placeholder="Make" />
           <label for="model" class="control-label">Model</label>
-          <input name="model" id="model" class="form-control" onKeyUp="checkslug();" value="<?php echo !empty($vehicle->model)?$vehicle->model:'';?>" placeholder="Model" />
+          <input name="model" id="model" class="form-control" onBlur="checkslug();" value="<?php echo !empty($vehicle->model)?$vehicle->model:'';?>" placeholder="Model" />
           <label for="additional" class="control-label">Additional</label>
-          <input name="additional" id="additional" class="form-control" onKeyUp="checkslug();" value="<?php echo !empty($vehicle->additional)?$vehicle->additional:'';?>" placeholder="additional" />
+          <input name="additional" id="additional" class="form-control" onBlur="checkslug();" value="<?php echo !empty($vehicle->additional)?$vehicle->additional:'';?>" placeholder="additional" />
           <input type="hidden" name="slug" id="slug" value="<?php echo !empty($vehicle->slug)?$vehicle->slug:$vehicle->id;?>" />
         </div>
       </div>
       <div class="tabcontent pricecontent">
         <div class="form-group">
           <label for="salePrice" class="control-label">Sale Price</label>
-          <input name="salePrice" id="salePrice" class="form-control" value="<?php echo !empty($vehicle->salePrice)?$vehicle->salePrice:'';?>" placeholder="0.00" />
+          <input name="salePrice" id="salePrice" class="form-control" value="<?php echo (!empty($vehicle->salePrice) || $vehicle->salePrice > 0)?$vehicle->salePrice:'';?>" placeholder="0.00" />
         </div>
         <div class="form-group">
           <label for="msrp" class="control-label">MSRP</label>
@@ -128,15 +129,15 @@ function viurl(string $viLink){
         </div>
         <div class="form-group">
           <label for="floorLength" class="control-label">Floor Length</label>
-          <input type="text" name="floorLength" id="floorLength" class="form-control" value="<?php echo !empty($vehicle->floorLength)?stripslashes($vehicle->floorLength):'';?>" placeholder="Floor Length" />
+          <input type="text" name="floorLength" id="floorLength" class="form-control" value="<?php echo !empty($vehicle->floorLength)?stripslashes(htmlentities($vehicle->floorLength)):'';?>" placeholder="Floor Length" />
         </div>
         <div class="form-group">
           <label for="floorWidth" class="control-label">Floor Width</label>
-          <input type="text" name="floorWidth" id="floorWidth" class="form-control" value="<?php echo !empty($vehicle->floorWidth)?stripslashes($vehicle->floorWidth):'';?>" placeholder="Floor Width" />
+          <input type="text" name="floorWidth" id="floorWidth" class="form-control" value="<?php echo !empty($vehicle->floorWidth)?stripslashes(htmlentities($vehicle->floorWidth)):'';?>" placeholder="Floor Width" />
         </div>
         <div class="form-group">
           <label for="sideHeight" class="control-label">Side Height</label>
-          <input type="text" name="sideHeight" id="sideHeight" class="form-control" value="<?php echo !empty($vehicle->sideHeight)?stripslashes($vehicle->sideHeight):'';?>" placeholder="Side Height" />
+          <input type="text" name="sideHeight" id="sideHeight" class="form-control" value="<?php echo !empty($vehicle->sideHeight)?stripslashes(htmlentities($vehicle->sideHeight)):'';?>" placeholder="Side Height" />
         </div>
         <div class="form-group">
           <label for="bodyType" class="control-label">Body Type</label>
@@ -150,33 +151,59 @@ function viurl(string $viLink){
     
         </div>
       </div>
-      <div class="tabcontent gallerycontent">
+      <div id="gallerycontent" class="tabcontent gallerycontent">
+        <span class="message"></span>
         <div class="form-group">
         <?php
         wp_enqueue_media();
         ?>
           <h4>Featured Image</h4>
-          <img id="featuredThumb" src="<?php echo !empty($vehicle->featuredImage)?$vehicle->featuredImage:'';?>" width="90" alt="" />
-          <button id="featuredUpload" class="btn btn-info btn-md" type="button"><?php echo !empty($vehicle->featuredImage)?'Change Image':'Select Image';?></button>
+          
+          <button id="featuredUpload" class="btn btn-info btn-md d-none" type="button"><?php echo !empty($vehicle->featuredImage)?'Change Image':'Select Image';?></button>
           <input type="hidden" name="featuredImage" id="featuredImage" value="<?php echo !empty($vehicle->featuredImage)?$vehicle->featuredImage:'';?>" />
           <input type="hidden" name="featuredid" id="featuredid" value="<?php echo !empty($vehicle->featuredid)?$vehicle->featuredid:'';?>" />
+          <div id="featured_thumb" class="col-sm-12">
+          <?php if(!empty($vehicle->featuredImage) && !empty($vehicle->featuredid)){ ?>
+            <div class="thumbnail"><span class="btn btn-danger btn-xs pull-right fupdate" data-image_id="<?php echo $vehicle->featuredid;?>"><i class="fa fa-times"></i></span><img class="img-fluid" src="<?php echo $vehicle->featuredImage;?>" alt="" /></div>
+          <?php } ?>
+          </div>
+          <div class="drop_area<?php if(!empty($vehicle->featuredImage) && !empty($vehicle->featuredid)){ echo ' d-none';} ?>" onclick="document.getElementById('featured').click()">
+          <input id="featured" class="d-none" name="featured" type="file" />
+          Drag & Drop Images Here
+          </div>
+          
         </div>
         <div class="form-group">
         <h4>Gallery</h4>
-          <button id="gallery_button" class="btn btn-info btn-md" type="button">Add Image</button>
-          <textarea name="gallery" id="gallery" style="display:none;"><?php echo !empty($vehicle->gallery)?$vehicle->gallery:'';?></textarea>
+          <button id="gallery_button" class="btn btn-info btn-md d-none" type="button">Add Image</button>
+          <textarea name="gallery" id="gallery" class="d-none"><?php echo !empty($vehicle->gallery)?$vehicle->gallery:'';?></textarea>
           <input type="hidden" name="galleryfiles" id="galleryfiles" value="<?php echo !empty($vehicle->galleryfiles)?$vehicle->galleryfiles:'';?>" />
-          <div id="gallery_container">
-          <?php 
-          if(!empty($vehicle->gallery)){
-            $links = rtrim($vehicle->gallery,',');
-            $links = explode(',',$links);
-            foreach($links as $link){
-              echo '<img width="90" src="'.$link.'" alt="" />';
-            }
-          }
-          ?>
+          <div id="uploaded_file">
+            <?php 
+              if(!empty($vehicle->gallery) && !empty($vehicle->galleryfiles)){
+                $links = rtrim($vehicle->gallery,',');
+                $links = ltrim($links,',');
+                //echo $links;
+                $links = explode(',',$links); 
+                //print_r($links);
+                $fileids = rtrim($vehicle->galleryfiles,',');
+                $fileids = ltrim($fileids,',');
+                //echo $fileids;
+                $fileids = explode(',',$fileids); 
+                //print_r($fileids);
+                if(count($fileids)==count($links)){
+                  $gallery = array_combine($fileids, $links); 
+                  foreach($gallery as $id=>$link){
+                    echo '<div class="thumbnail"><span class="btn btn-danger btn-xs pull-right update" data-image_id="'.$id.'"><i class="fa fa-times"></i></span><img class="img-fluid" src="'.$link.'" alt="" /></div>';
+                  }
+                }
+              }
+            ?>
           </div>
+          <div id="drop_area" class="<?php //if(!empty($vehicle->gallery)){echo 'd-none';} ?>" onclick="document.getElementById('ddgallery').click()">
+            <input id="ddgallery" class="d-none" name="file[]" type="file" multiple />
+            Drag & Drop Images Here</div>
+            <b class="error"></b>
         </div>
       </div>
       <div class="tabcontent publishcontent">
@@ -191,7 +218,7 @@ function viurl(string $viLink){
           <input type="hidden" name="createdBy" id="createdBy" value="<?php echo get_current_user_id();?>" />
           <input type="hidden" name="createdAt" id="createdAt" value="<?php echo date('Y-m-d H:i:s'); ?>" />
           <input type="hidden" name="vehicle" id="vehicle" value="update" />
-          <button type="submit" id="vipublish" class="btn btn-primary btn-sm">Update</button>
+          <button type="button" id="vipublish" class="btn btn-primary btn-sm">Update</button>
         </div>
       </div>
     </div>
@@ -224,7 +251,6 @@ function checkslug(){
   jQuery(document).ready(function($){
     $('#visave').on('click', function(e){
       e.preventDefault();
-      //$('#vipublish').trigger("click");
       var endpoint = "<?php echo viurl("/vehicle.php");?>";
       $.ajax({
             url:endpoint,
@@ -238,6 +264,245 @@ function checkslug(){
                 console.log(data);
                 var html = '';
                   
+            }
+        });
+    });
+
+    $('#vipublish').on('click', function(e){
+      e.preventDefault();
+      var endpoint = "<?php echo viurl("/vehicle.php");?>";
+      $.ajax({
+            url:endpoint,
+            method: "POST",
+            data: new FormData(document.getElementById('vehicleform')),
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '<span>Saved <a href="">View</a></span>';
+                $('#message').html(html);
+            }
+        });
+    });
+
+    // image upload
+    $('#featured').on('change', function(e){
+      e.preventDefault();
+      //var endpoint = "<?php //echo admin_url('admin-ajax.php');?>";
+      var endpoint = "<?php echo viurl("/image.php");?>";
+      var formData = new FormData(document.getElementById('vehicleform'));
+      $.ajax({
+            url:endpoint,
+            method: "POST",
+            data: formData,
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                html += '<div class="thumbnail"><span class="btn btn-danger btn-xs pull-right fupdate" data-image_id="'+data.save.insertid+'"><i class="fa fa-times"></i></span><img class="img-fluid" src="'+data.url+'" alt="" /></div>';
+                $('#featured_thumb').html(html);
+                $('#featuredImage').val(data.url);
+                $('#featuredid').val(data.save.insertid);
+                if(data.type.error){
+                  $('.error').text(data.type.error);
+                }else{
+                  $('.error').text('');
+                }
+                $('.drop_area').addClass('d-none');
+            }
+        });
+    });
+
+    // drag and drop
+    $("html").on("dragover", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    $("html").on("drop", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    $('#drop_area').on('dragover', function () {
+      $(this).addClass('drag_over');
+      return false;
+    });
+
+    $('#drop_area').on('dragleave', function () {
+      $(this).removeClass('drag_over');
+      return false;
+    });
+
+    // single drag drop
+    $('.drop_area').on('drop', function (e) {
+      e.preventDefault();
+      $(this).removeClass('drag_over');
+      var id = $('#id').val();
+      var formData = new FormData();
+      var files = e.originalEvent.dataTransfer.files;
+      formData.append('file[0]', files[0]);
+      formData.append('id', id);
+      var endpoint = "<?php echo viurl("/single_dragdrop.php");?>";
+      $.ajax({
+        url: endpoint,
+        method: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType: "json",
+        success: function (data) {
+          console.log(data);
+          $('#featured_thumb').append(data.thumbs);
+          $('.drop_area').addClass('d-none');
+          $('#featuredImage').val(data.url);
+          $('#featuredid').val(data.save.insertid);
+        }
+      });
+    });
+
+    // multiple select
+    $('#ddgallery').on('change', function (e) {
+      e.preventDefault();
+      var formData = new FormData(document.getElementById('vehicleform'));
+      var endpoint = "<?php echo viurl("/dragdrop.php");?>";
+      $.ajax({
+        url: endpoint,
+        method: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType: "json",
+        success: function (data) {
+          console.log(data);
+          $('#uploaded_file').append(data.thumbs);
+          //$('#drop_area').hide();
+          $('#gallery').text(data.gallery);
+          $('#galleryfiles').val(data.galleryfiles);
+        }
+      });
+    });
+    
+    // multiple drag drop
+    $('#drop_area').on('drop', function (e) {
+      e.preventDefault();
+      $(this).removeClass('drag_over');
+      var id = $('#id').val();
+      var formData = new FormData();
+      var files = e.originalEvent.dataTransfer.files;
+      for (var i = 0; i < files.length; i++) {
+        formData.append('file[]', files[i]);
+      }
+      formData.append('id', id);
+      var endpoint = "<?php echo viurl("/dragdrop.php");?>";
+      $.ajax({
+        url: endpoint,
+        method: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType: "json",
+        success: function (data) {
+          console.log(data);
+          $('#uploaded_file').append(data.thumbs);
+          //$('#drop_area').hide();
+          $('#gallery').text(data.gallery);
+          $('#galleryfiles').val(data.galleryfiles);
+        }
+      });
+    });
+
+
+    // delete image
+    $(document).on('click', '.delete', function(e){
+      e.preventDefault();
+      //var endpoint = "<?php //echo admin_url('admin-ajax.php');?>";
+      var endpoint = "<?php echo viurl("/image_delete.php");?>";
+      var image = $(this).data('image_id');
+      var thumb = $(this).parent();
+      $.ajax({
+            url:endpoint+'?image_id='+image,
+            method: "GET",
+            //data: new FormData(document.getElementById('vehicleform')),
+            //data:'{"image_id":"'+image+'"}',
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                thumb.html(html);
+                thumb.hide();
+            }
+        });
+    });
+
+    // update image
+    $(document).on('click', '.fupdate', function(e){
+      e.preventDefault();
+      //var endpoint = "<?php //echo admin_url('admin-ajax.php');?>";
+      var endpoint = "<?php echo viurl("/image_update.php");?>";
+      var image = $(this).data('image_id');
+      var id = $('#id').val();
+      var thumb = $(this).parent();
+      
+      $.ajax({
+            url:endpoint+'?image_id='+image+'&id='+id,
+            method: "GET",
+            //data: new FormData(document.getElementById('vehicleform')),
+            //data:'{"image_id":"'+image+'"}',
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                thumb.html(html);
+                thumb.hide();
+                $('#featuredImage').val('');
+                $('#featuredid').val('');
+                $('.drop_area').removeClass('d-none');
+            }
+        });
+    });
+
+    // update image
+    $(document).on('click', '.update', function(e){
+      e.preventDefault();
+      //var endpoint = "<?php //echo admin_url('admin-ajax.php');?>";
+      var endpoint = "<?php echo viurl("/image_update_gallery.php");?>";
+      var image = $(this).data('image_id');
+      var id = $('#id').val();
+      var thumb = $(this).parent();
+      $.ajax({
+            url:endpoint+'?image_id='+image+'&id='+id,
+            method: "GET",
+            //data: new FormData(document.getElementById('vehicleform')),
+            //data:'{"image_id":"'+image+'"}',
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                var html = '';
+                thumb.html(html);
+                thumb.hide();
+                $('#gallery').text(data.gallery);
+                $('#galleryfiles').val(data.galleryfiles);
+                // if(data.remains.length==0){
+                //   $('#drop_area').removeClass('d-none');
+                // }
             }
         });
     });

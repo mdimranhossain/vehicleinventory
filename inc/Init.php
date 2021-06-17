@@ -14,6 +14,7 @@ class Init
     private $viPath;
     private $db;
     private $table;
+    private $imageTable;
     private $vi_slug;
     
     public function __construct()
@@ -21,6 +22,7 @@ class Init
         global $wpdb;
         $this->db = $wpdb;
         $this->table = $this->db->prefix.'inventory';
+        $this->imageTable = $this->db->prefix.'inventory_images';
 
         $this->viUrl = plugins_url("", dirname(__FILE__));
         $this->viPath = dirname(__FILE__, 2);
@@ -38,6 +40,8 @@ class Init
         add_action('admin_menu', [$this, 'viAddPage']);
         add_action('vivehicles', [$this, 'viVehicles']);
         add_action( 'wp_ajax_viDeleteAttachment', [$this, 'viDeleteAttachment']);
+        
+        add_action( 'wp_ajax_viUpload', [$this, 'viUpload']);
 
         add_filter( 'query_vars', function( $query_vars ){
             $query_vars[] = $this->vi_slug;
@@ -107,12 +111,15 @@ class Init
         wp_enqueue_style('fontawesome', $this->viUrl.'/assets/font-awesome/css/font-awesome.min.css');
         wp_enqueue_style('vi-styles', $this->viUrl . '/assets/vi-styles.css');
     }
+
     public function viAssets(string $hook)
     {
         wp_enqueue_style('fontawesome', $this->viUrl.'/assets/font-awesome/css/font-awesome.min.css');
         wp_enqueue_style('bootstrap-css', $this->viUrl.'/assets/Bootstrap-4-4.1.1/css/bootstrap.min.css');
+        wp_enqueue_style('fancybox-css', $this->viUrl.'/assets/fancybox/jquery.fancybox.min.css');
         wp_enqueue_style('slider-css', $this->viUrl.'/assets/slider/slider.min.css');
         wp_enqueue_script('jquery-js', $this->viUrl.'/assets/jquery.min.js', array(), false, false);
+        wp_enqueue_script('fancybox-js', $this->viUrl.'/assets/fancybox/jquery.fancybox.min.js', array(), false, true);
         wp_enqueue_script('slider-js', $this->viUrl.'/assets/slider/slider.min.js', array(), false, true);
         wp_enqueue_script('bootstrap-js', $this->viUrl.'/assets/Bootstrap-4-4.1.1/js/bootstrap.min.js', array(), false, true);
         wp_enqueue_script('scripts-js', $this->viUrl.'/assets/scripts.js', array(), false, true);
@@ -122,22 +129,107 @@ class Init
     
     public function viDeleteAttachment() {
         $data['id'] = $_REQUEST['post_id'];
-        $data['gallery'] = $_REQUEST['gallery'];
-        $data['featured'] = $_REQUEST['featured'];
+        $data['galleryfiles'] = $_REQUEST['galleryfiles'];
+        $data['featuredid'] = $_REQUEST['featuredid'];
         $data['delete'] = [];
-        $data['message'] = '';
+        $data['message'] = [];
         $data['files'] = [];
 
-        if(!empty($data['gallery'])){
-           
-            $data['files'] = explode(',',$data['gallery']);
-            foreach($data['files'] as $post_id){
-              $data['delete'][$post_id] = wp_delete_attachment($post_id,true);
-             // $data['delete'][$post_id] = $post_id;
+        if(!empty($data['galleryfiles'])){
+            $data['files'] = explode(',',$data['galleryfiles']);
+            foreach($data['files'] as $image_id){
+                $data['gallery'][$image_id] = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->imageTable} WHERE id = %d", $image_id));
+                $data['delete']['gallery'][$image_id] = $this->db->delete($this->imageTable, ['id' => $image_id]);
+                if(!empty($data['gallery'][$image_id]->file_path) && file_exists($data['gallery'][$image_id]->file_path)){
+                    unlink($data['gallery'][$image_id]->file_path);
+                }
+
+                if(!empty($data['delete']['gallery'][$image_id])){
+                    $data['message']['gallery'][$image_id]= 'Gallery Image(s) Deleted';
+                }
             }
-            if(!empty($data['delete'])){
-                $data['message'] .= 'Attachment(s) Deleted';
+                  
+        }
+
+        if(!empty($data['featuredid'])){
+           // $data['files'] = explode(',',$data['galleryfiles']);
+           $data['featured'] = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->imageTable} WHERE id = %d", $data['featuredid']));
+           $data['delete']['featured'] = $this->db->delete($this->imageTable, ['id' => $data['featuredid']]);
+           if(!empty($data['featured']->file_path) && file_exists($data['featured']->file_path)){
+               unlink($data['featured']->file_path);
+           }
+            if(!empty($data['delete']['featured'])){
+                $data['message']['featured']= 'Featured Image Deleted';
             }      
+        }
+
+        $data['delete']['inventory'] = $this->db->delete($this->table, ['id' => $data['id']]);
+
+        if(!empty($data['delete']['inventory'])){
+            $data['message']['inventory']= 'Inventory Deleted';
+        }
+
+        echo json_encode($data);
+        die();
+    }
+
+    public function viUpload()
+    {
+        ini_set('post_max_size', '5M'); //or bigger by multiple files
+        ini_set('upload_max_filesize', '5M');
+        ini_set('max_file_uploads', 1);
+
+        $target_dir = wp_upload_dir();
+        $target_file = $target_dir . basename($_FILES["file"]["name"]);
+        $chars = [' ',',','(',')'];
+        $target_file = str_replace($chars, '', $target_file);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        $data=[];
+        // Check if image file is a actual image or fake image
+        if(isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["file"]["tmp_name"]);
+        if($check !== false) {
+            $data['mime'] = "File is - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+            $data['not_allowed'] = "File is not allowed.";
+            $uploadOk = 0;
+        }
+        }
+
+        // Check if file already exists
+        if (file_exists($target_file)) {
+        $data['duplicate'] = "Sorry, file already exists. Please rename your file.";
+        //$data['filename'] = $target_file.'-1';
+        $uploadOk = 0;
+        }
+
+        // Check file size
+        if ($_FILES["file"]["size"] > 500000) {
+        $data['size_error'] = "Sorry, your file is too large.";
+        $uploadOk = 0;
+        }
+        $data['filetype'] = $imageFileType;
+        // Allow certain file formats
+        $allowed =['pdf','doc','docx','odt'];
+        if(!in_array($imageFileType,$allowed)) {
+        $data['type_error'] = "Sorry, only PDF and or Word files are allowed.";
+        $uploadOk = 0;
+        }
+
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+        $data['upload_error'] = "Sorry, your file was not uploaded.";
+        // if everything is ok, try to upload file
+        } else {
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            $data['success'] = "The file ". htmlspecialchars( basename($_FILES["file"]["name"])). " has been uploaded.";
+            $data['dir'] = $target_dir;
+            $data['file'] = wp_upload_dir().'/'.$target_file;
+        } else {
+            $data['file_error'] = "Sorry, there was an error uploading your file.";
+        }
         }
         echo json_encode($data);
         die();
@@ -147,19 +239,21 @@ class Init
     {
         include_once($this->viPath . '/template/vivehicles.php');
     }
+
     public function viAddNew()
     {
         include_once($this->viPath . '/template/viaddnew.php');
     }
+    
     public function viEdit()
     {
         include_once($this->viPath . '/template/viedit.php');
     }
+
     public function viSettings()
     {
         include_once($this->viPath . '/template/visettings.php');
     }
-
     
 
     public function viActivate()
@@ -170,6 +264,7 @@ class Init
         $vi_slug = $this->vi_slug;
 
         $table = $this->table;
+        $images = $this->images;
         include_once($this->viPath . '/inc/Database.php');
         $this->db->query($create_table);
 

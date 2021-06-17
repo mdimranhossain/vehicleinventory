@@ -6,7 +6,12 @@ get_header();
 
 $slug = get_option('vi_slug');
 $slug = get_query_var($slug);
-
+$emailfriend = get_option('vi_emailfriend');
+$availability = get_option('vi_availability');
+$address = get_option('vi_address');
+$phone = get_option('vi_phone');
+$weekday = get_option('vi_weekday');
+$weekend = get_option('vi_weekend');
 //echo $inventory;
 global $wpdb;
 $table = $wpdb->prefix.'inventory';
@@ -21,11 +26,25 @@ $vehicleTitle = $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional;
 	<div class="row">
 		<div class="col-sm-8">
 			<div class="row">
-				<div class="col-sm-12 text-center">
-					<h2><?php echo $vehicleTitle; ?></h2>
-				</div>
+				<!-- <div class="col-sm-12 text-center">
+					<h2><?php //echo $vehicleTitle; ?></h2>
+				</div> -->
 				<div class="col-sm-12">
-					<img src="<?php echo $vehicle->featuredImage; ?>" alt="" class="img-fluid" />
+					<?php
+						if($vehicle->gallery){ 
+							$images = explode(',',$vehicle->gallery)
+							?>
+							<ul class="slider">
+								<?php foreach( $images as $image ): ?>
+									<li>
+										<a href="<?php echo esc_url($image); ?>">
+											<img src="<?php echo esc_url($image); ?>" alt="<?php echo $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional; ?>" />
+										</a>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+					<?php } ?>
+					<!-- <img src="<?php //echo $vehicle->featuredImage; ?>" alt="" class="img-fluid" /> -->
 				</div>
 				<div class="col-sm-12">
 					<p><?php echo $vehicle->description; ?></p>
@@ -33,44 +52,35 @@ $vehicleTitle = $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional;
 				<div class="col-sm-12">
 					<h4 class="pt-2 pb-2"><?php echo $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional; ?></h4>
 					<ul>
-						<li>Condition: <?php echo $vehicle->vehicleCondition; ?></li>
-						<li>Payload capacity: <?php echo $vehicle->payloadCapacity; ?></li>
-						<li>Empty weight: <?php echo $vehicle->emptyWeight; ?></li>
+						<li>Condition: <?php echo stripslashes($vehicle->vehicleCondition); ?></li>
+						<li>Payload capacity: <?php echo stripslashes($vehicle->payloadCapacity); ?></li>
+						<li>Empty weight: <?php echo stripslashes($vehicle->emptyWeight); ?></li>
 						<li>Floor length: <?php echo stripslashes($vehicle->floorLength); ?></li>
 						<li>Floor width: <?php echo stripslashes($vehicle->floorWidth); ?></li>
 						<li>Side height: <?php echo stripslashes($vehicle->sideHeight); ?></li>
-						<li>Body type: <?php echo $vehicle->bodyType; ?></li>
+						<li>Body type: <?php echo stripslashes($vehicle->bodyType); ?></li>
 					</ul>
 				</div>
 				<div class="col-sm-12">
 					<h5 class="pt-2 pb-2">Additional Information:</h5>
-					<p><?php echo $vehicle->addtionalInfo; ?></p>
+					<p><?php echo nl2br(htmlentities($vehicle->addtionalInfo, ENT_QUOTES, 'UTF-8')); ?></p>
 				</div>
-				<div class="col-sm-12">
-					<?php
-						if($vehicle->gallery){ 
-							$images = explode(',',$vehicle->gallery)
-							?>
-							<h3 class="pt-2 pb-2">Gallery:</h3>
-							<ul class="gallery">
-								<?php foreach( $images as $image ): ?>
-									<li>
-										<a href="<?php echo esc_url($image); ?>">
-										<img src="<?php echo esc_url($image); ?>" alt="<?php echo $vehicle->make.' '.$vehicle->model; ?>" />
-										</a>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-					<?php } ?>
-				</div>
+				
 			</div> 
 		</div>
 		<div class="col-sm-4 sidebar">
-			<div class="contact p-1 rounded">
+			<div class="buttons">
+				<a class="btn btn-danger btn-block" data-fancybox data-type="iframe" data-src="<?php echo $availability; ?>" href="javascript:;" id="" role="button">
+				<i class="fa fa-check-square-o"></i><span> Check Availability</span></a>
+				<a class="btn btn-danger btn-block" data-fancybox data-type="iframe" data-src="<?php echo $emailfriend; ?>" href="javascript:;" id="" role="button">
+				<i class="fa fa-envelope-o"></i><span> Email a Friend</span></a>
+			</div>
+		
+			<div class="contact p-3 rounded">
 			<h3 class="contact-title text-danger border-bottom-1">Contact Details</h3>
-			<p>13425 Hwy 99 | Everett, WA 98204</p>
-			<p><b>Phone:</b> <a href="tel:4257421102">(425) 742-1102</a></p>
-			<p><b>Monday – Saturday:</b> 10:00AM -7:00PM<br> <b>Sunday:</b> 11:00AM-6:00PM</p>
+			<p><?php echo strtoupper($address); ?></p>
+			<p><b>Phone:</b> <a href="tel:<?php echo $phone;?>"><?php echo $phone;?></a></p>
+			<p><b>Monday – Saturday:</b> <?php echo strtoupper($weekday);?><br> <b>Sunday:</b> <?php echo strtoupper($weekend);?></p>
 			</div>
 		</div>
 	</div> 

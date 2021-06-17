@@ -57,3 +57,50 @@
   right:20px;
   z-index: 9;
 }
+#menu-item-browse{
+  display: none!important;
+}
+.error{
+  color:red;
+}
+
+#drop_area, .drop_area {
+  background: #f9f9f9;
+  min-height:150px;
+  border: 2px dashed #ccc;
+  line-height:150px;
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.drag_over{
+  color: #000;
+  border-color: #000;
+}
+
+.thumbnail{
+  width: 100px;
+  height: 100px;
+  padding: 2px;
+  margin: 2px;
+  border: 2px solid lightgray;
+  border-radius: 3px;
+  float: left;
+}
+#featured_thumb .thumbnail{
+  float: none;
+}
+
+#upload_file{
+  display: none;
+}
+
+.delete,.update,.fupdate{
+  padding: 0 4px 2px 4px;
+  line-height: 1;
+}
+
+#settings .row{
+  padding-top:20px;
+}

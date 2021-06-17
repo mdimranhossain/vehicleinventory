@@ -1,6 +1,6 @@
 <?php
 /*
-* vehicle
+* checkslug
 * @Package: VehicleInventory
 */
 

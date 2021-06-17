@@ -4,7 +4,7 @@
  */
 get_header();
 $slug = get_option('vi_slug');
-//$slug = get_query_var($slug);
+$phone = get_option('vi_phone');
 ?>
 <script>document.title = "All Inventory";</script>
 	<div id="inventory">
@@ -36,7 +36,7 @@ $slug = get_option('vi_slug');
 	      			</div>
 	      			<div class="col-sm-6">
 						<ul>
-							<li class="phone"><i class="fa fa-phone"></i> <a href="tel:4257421102">(425) 742-1102</a></li>
+							<li class="phone"><i class="fa fa-phone"></i> <a href="tel:<?php echo $phone;?>"><?php echo $phone;?></a></li>
 							<li class="print"> <a href="#"><i class="fa fa-print"></i></a> </li>
 						</ul>
 	      			</div>
@@ -62,13 +62,13 @@ $slug = get_option('vi_slug');
 	      			<div class="col-sm-4">
 	      				<div class="vehicle-description">
 	      					<p><?php echo $vehicle->description; ?></p>
-							  <h2 class="moreinfo"><a href="<?php echo esc_url(home_url()).'/'.$slug.'/'.$vehicle->slug; ?>">View More Info</a></h2>
 	      				</div>
 	      			</div>
 
 	      			<div class="col-sm-4 text-center dealer">
 						<h4>Call For PRICING</h4>
-						<a href="javascript:;" class="border border-danger">$ Contact Dealer</a>
+						<a href="<?php echo esc_url(home_url()).'/'.$slug.'/'.$vehicle->slug; ?>" class="btn btn-link btn-lg border border-danger d-block">View Details</a>
+						<a href="javascript:;" class="btn btn-link btn-lg border border-danger d-block">$ Contact Dealer</a>
 	      			</div>
 	      				
 	      		</div>

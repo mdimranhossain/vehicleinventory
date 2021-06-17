@@ -26,7 +26,7 @@ if(!empty($_REQUEST['vehicle'])){
 
 switch($handle){
     case 'create':
-        $vehicle->viCreate();
+        echo $vehicle->viCreate();
         break;
     case 'update':
        echo $vehicle->viUpdate();

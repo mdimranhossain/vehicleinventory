@@ -29,7 +29,7 @@ class Vehicle
     public function viCreate(): string
     {
         $input = $_POST;
-
+        $data['post'] = $_POST;
         $data['insert'] = [
             'make' => $input['make'],
             'model' => $input['model'],
@@ -47,7 +47,9 @@ class Vehicle
             'bodyType' => $input['bodyType'],
             'addtionalInfo' => $input['addtionalInfo'],
             'featuredImage' => $input['featuredImage'],
+            'featuredid' => $input['featuredid'],
             'gallery' => $input['gallery'],
+            'galleryfiles' => $input['galleryfiles'],
             'status' => $input['status'],
             'createdBy' => $input['createdBy'],
             'createdAt' => $input['createdAt']
@@ -119,7 +121,9 @@ class Vehicle
             'bodyType' => $input['bodyType'],
             'addtionalInfo' => $input['addtionalInfo'],
             'featuredImage' => $input['featuredImage'],
+            'featuredid' => $input['featuredid'],
             'gallery' => $input['gallery'],
+            'galleryfiles' => $input['galleryfiles'],
             'status' => $input['status'],
             'updatedBy' => $input['createdBy'],
             'updatedAt' => $input['createdAt']
@@ -147,11 +151,11 @@ class Vehicle
     {
         $id = $_REQUEST['post_id'];
         $data['vehicle'] = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id));
-        $data['delete'] = $this->db->delete($table, ['id' => $id]);
+        $data['delete'] = $this->db->delete($this->table, ['id' => $id]);
 
         $data['message'] = '';
         if($data['delete']){
-            $data['message'] = 'Vehicle Deleted!!!';
+            $data['message']['inventory'] = 'Vehicle Deleted!!!';
         }
         echo json_encode($data);
     }
