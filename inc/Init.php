@@ -16,6 +16,12 @@ class Init
     private $table;
     private $imageTable;
     private $vi_slug;
+    private $vi_emailfriend;
+    private $vi_availability;
+    private $vi_address;
+    private $vi_phone;
+    private $vi_weekday;
+    private $vi_weekend;
     
     public function __construct()
     {
@@ -28,6 +34,12 @@ class Init
         $this->viPath = dirname(__FILE__, 2);
         
         $this->vi_slug = !empty(get_option('vi_slug'))?get_option('vi_slug'):'inventory';
+        $this->vi_emailfriend = !empty(get_option('vi_emailfriend'))?get_option('vi_emailfriend'):'';
+        $this->vi_availability = !empty(get_option('vi_availability'))?get_option('vi_availability'):'';
+        $this->vi_address = !empty(get_option('vi_address'))?get_option('vi_address'):'';
+        $this->vi_phone = !empty(get_option('vi_phone'))?get_option('vi_phone'):'';
+        $this->vi_weekday = !empty(get_option('vi_weekday'))?get_option('vi_weekday'):'';
+        $this->vi_weekend = !empty(get_option('vi_weekend'))?get_option('vi_weekend'):'';
 
     }
 
@@ -262,17 +274,38 @@ class Init
         $vi_db_version = '1.0';
         global $vi_slug;
         $vi_slug = $this->vi_slug;
+        global $vi_emailfriend;
+        $vi_emailfriend = $this->vi_emailfriend;
+        global $vi_availability;
+        $vi_availability = $this->vi_availability;
+        global $vi_address;
+        $vi_address = $this->vi_address;
+        global $vi_phone;
+        $vi_phone = $this->vi_phone;
+        global $vi_weekday;
+        $vi_weekday = $this->vi_weekday;
+        global $vi_weekend;
+        $vi_weekend = $this->vi_weekend;
 
         $table = $this->table;
-        $images = $this->images;
+        $imageTable = $this->imageTable;
         include_once($this->viPath . '/inc/Database.php');
         $this->db->query($create_table);
+        $this->db->query($create_imageTable);
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	    dbDelta($create_table);
+        dbDelta($create_imageTable);
 
 	    add_option( 'vi_db_version', $vi_db_version );
+
         add_option( 'vi_slug', $vi_slug );
+        add_option( 'vi_emailfriend', $vi_emailfriend );
+        add_option( 'vi_availability', $vi_availability );
+        add_option( 'vi_address', $vi_address );
+        add_option( 'vi_phone', $vi_phone );
+        add_option( 'vi_weekday', $vi_weekday );
+        add_option( 'vi_weekend', $vi_weekend );
     }
 
     public function viDeactivate()

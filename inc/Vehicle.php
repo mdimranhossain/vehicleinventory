@@ -9,7 +9,8 @@ declare(strict_types=1);
 namespace Inc;
 
 class Vehicle
-{   private $db;
+{   
+    private $db;
     private $table;
 
     public function __construct()

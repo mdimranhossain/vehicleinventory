@@ -11,11 +11,13 @@ namespace Inc;
 class Setting
 {   private $db;
     private $table;
+    private $imageTable;
     public function __construct()
     {
         global $wpdb;
         $this->db = $wpdb;
         $this->table = $this->db->prefix.'inventory';
+        $this->imageTable = $this->db->prefix.'inventory_images';
     }
 
     public function viUpdateInventoryOptions($data): string
