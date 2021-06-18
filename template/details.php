@@ -78,9 +78,9 @@ $vehicleTitle = $vehicle->make.' '.$vehicle->model.' '.$vehicle->additional;
 		
 			<div class="contact p-3 rounded">
 			<h3 class="contact-title text-danger border-bottom-1">Contact Details</h3>
-			<p><?php echo strtoupper($address); ?></p>
-			<p><b>Phone:</b> <a href="tel:<?php echo $phone;?>"><?php echo $phone;?></a></p>
-			<p><b>Monday – Saturday:</b> <?php echo strtoupper($weekday);?><br> <b>Sunday:</b> <?php echo strtoupper($weekend);?></p>
+			<p><?php echo strtoupper($address); ?><br>
+			<b>Phone:</b> <a href="tel:<?php echo $phone;?>"><?php echo $phone;?></a><br>
+			<b>Monday – Saturday:</b> <?php echo strtoupper($weekday);?><br> <b>Sunday:</b> <?php echo strtoupper($weekend);?></p>
 			</div>
 		</div>
 	</div> 
