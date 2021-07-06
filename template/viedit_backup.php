@@ -59,8 +59,9 @@ function viurl(string $viLink){
       'updatedBy' => $input['createdBy'],
       'updatedAt' => $input['createdAt']
     ];
-    $where = [ 'id' => $id ];
-    $wpdb->update($table, $data, $where);
+  //$format = ['%s','%d','%d','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%d','%s','%s'];
+  $where = [ 'id' => $id ];
+  $wpdb->update($table, $data, $where);
 
     if($id){
       $url='admin.php?page=viedit&id='.$id;
@@ -73,7 +74,7 @@ function viurl(string $viLink){
     <form id="vehicleform" action="" method="POST" enctype="multipart/form-data">
     <div class="container-fluid">
       <div class="row">
-    <div class="col-sm-12 addnewtop"><div class="col-sm-6"><h2>Update</h2></div></div>
+    <div class="col-sm-12 addnewtop"><div class="col-sm-6"><h2>Update</h2></div><div id="message" class="col-sm-6"></div></div>
     <div id="tabs" class="col-sm-3">
       <div class="tab title active"><a href="#">Title</a></div>
       <div class="tab price"><a href="#">Price</a></div>
@@ -154,7 +155,7 @@ function viurl(string $viLink){
         <span class="message"></span>
         <div class="form-group">
         <?php
-        //wp_enqueue_media();
+        wp_enqueue_media();
         ?>
           <h4>Featured Image</h4>
           
@@ -190,21 +191,12 @@ function viurl(string $viLink){
                 //echo $fileids;
                 $fileids = explode(',',$fileids); 
                 //print_r($fileids);
-                global $wpdb,$table_prefix;
-                
-                foreach($fileids as $id){
-                  if($id){
-                  $link = $wpdb->get_var('SELECT url FROM '.$table_prefix.'inventory_images WHERE id = '.$id);
-                  echo '<div class="thumbnail" data-id="'.$id.'"><span class="btn btn-danger btn-xs pull-right update" data-image_id="'.$id.'"><i class="fa fa-times"></i></span><img class="img-fluid" src="'.$link.'" alt="" /></div>';
-                  }
-                }
-                /*
                 if(count($fileids)==count($links)){
                   $gallery = array_combine($fileids, $links); 
                   foreach($gallery as $id=>$link){
                     echo '<div class="thumbnail" data-id="'.$id.'"><span class="btn btn-danger btn-xs pull-right update" data-image_id="'.$id.'"><i class="fa fa-times"></i></span><img class="img-fluid" src="'.$link.'" alt="" /></div>';
                   }
-                } */
+                }
               }
             ?>
           </div>
@@ -230,9 +222,8 @@ function viurl(string $viLink){
         </div>
       </div>
     </div>
-    
+    <div class="col-sm-12 addnewbottom"><h2><button type="button" id="visave" class="btn btn-primary btn-sm pull-right">Save</button><br /><br /></h2></div>
     </div>
-    <div class="row addnewbottom"><div class="col-sm-6"><div id="message"></div></div><div class="col-sm-6"><h2><button type="button" id="visave" class="btn btn-primary btn-sm pull-right">Save</button><br /><br /></h2></div></div>
     </div>
     </form>
 
@@ -272,8 +263,7 @@ function checkslug(){
             success: function(data) {
                 console.log(data);
                 var html = '';
-                var message = '<div class="alert success">'+data.message+'</div>';
-                $('#message').html(message);
+                  
             }
         });
     });
@@ -292,8 +282,7 @@ function checkslug(){
             success: function(data) {
                 console.log(data);
                 var html = '<span>Saved <a href="">View</a></span>';
-                var message = '<div class="alert success">'+data.message+'</div>';
-                $('#message').html(message);
+                $('#message').html(html);
             }
         });
     });
@@ -568,18 +557,76 @@ function checkslug(){
       $('.publishcontent').show();
     });
 
-    // sortable
-    $( "#uploaded_file" ).sortable({
-      update: function(){
-        var list = new Array();
-        $(this).find('.thumbnail').each(function(){
-          var id=$(this).attr('data-id');	
-          list.push(id);
-        });
-        //console.log(list);
-        $('#galleryfiles').val(list.join());
+    //Set Featured Image
+
+    var viFeatured;
+
+    $('#featuredUpload').click(function(e) {
+      e.preventDefault();
+      // If the upload object has already been created, reopen the dialog
+        if (viFeatured) {
+        viFeatured.open();
+        return;
       }
+      // Extend the wp.media object
+      viFeatured = wp.media.frames.file_frame = wp.media({
+        title: 'Select Image',
+        button: {
+        text: 'Select Image'
+      }, multiple: false });
+
+      // When a file is selected, grab the URL and set it as the text field's value
+      viFeatured.on('select', function() {
+        var attachment = viFeatured.state().get('selection').first().toJSON();
+        $('#featuredImage').val(attachment.url);
+        $('#featuredid').val(attachment.id);
+        $('#featuredThumb').attr('src',attachment.url);
+        $('#featuredUpload').text('Change Image');
+      });
+      // Open the upload dialog
+      viFeatured.open();
     });
+
+
+    //Set Gallery
+
+    var viGallery;
+
+    $('#gallery_button').click(function(e) {
+      e.preventDefault();
+     
+        if (viGallery) {
+            viGallery.open();
+          return;
+        }
+ 
+      viGallery = wp.media.frames.file_frame = wp.media({
+        title: 'Select Image',
+        button: {
+        text: 'Select Image'
+      }, multiple: true });
+
+      viGallery.on('select', function() {
+        var attachment = viGallery.state().get('selection').toJSON();
+        var gallery = '';
+        var thumbs = '';
+        var galleryfiles = '';
+        $.each( attachment, function( key, value ) {
+          thumbs +='<img id="'+value.id+'" width="90" src="'+value.url+'" alt="" />';
+          //gallery +='<input type="hidden" name="gallery[]" value="'+value.url+'" id="img'+key+'" />';
+          gallery += value.url+',';
+          galleryfiles += value.id+',';
+        });
+        $('#gallery').text(gallery);
+        $('#galleryfiles').val(galleryfiles);
+        $('#gallery_container').html(thumbs);
+      });
+
+      viGallery.open();
+    });
+
+    // sortable
+    $( "#uploaded_file" ).sortable();
 
   });
 </script>

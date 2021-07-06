@@ -109,6 +109,10 @@
   -moz-box-shadow:none;
   -webkit-box-shadow:none;
 }
+.bx-wrapper .bx-pager,
+.bx-wrapper .bx-controls-auto {
+  bottom: -60px;
+}
 .buttons{
   margin: 20px auto;
 }

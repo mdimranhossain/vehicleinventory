@@ -118,8 +118,10 @@ class Init
 
     public function viAdminAssets(string $hook)
     {
+        wp_enqueue_script('jqueryui_js', $this->viUrl . '/assets/jqueryui/jquery-ui.min.js');
         wp_enqueue_style('dt_bs_css', $this->viUrl . '/assets/datatables.min.css');
         wp_enqueue_script('dt_bs_js', $this->viUrl . '/assets/datatables.min.js');
+        wp_enqueue_style('jqueryui_css', $this->viUrl . '/assets/jqueryui/jquery-ui.min.css');
         wp_enqueue_style('fontawesome', $this->viUrl.'/assets/font-awesome/css/font-awesome.min.css');
         wp_enqueue_style('vi-styles', $this->viUrl . '/assets/vi-styles.css');
     }

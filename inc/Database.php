@@ -37,6 +37,7 @@ $create_table = "CREATE TABLE IF NOT EXISTS `{$table}` (
     `file_path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `inventory_id` int(11) DEFAULT NULL,
     `attachment` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+    `display_order` int(5) DEFAULT NULL,
     `uploadedBy` int(11) DEFAULT NULL,
     `uploadedAt` datetime DEFAULT current_timestamp(),
     PRIMARY KEY (`id`)

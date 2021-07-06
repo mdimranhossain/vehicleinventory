@@ -324,4 +324,5 @@ class Image
 
         return json_encode($data);
     }
+
 }
