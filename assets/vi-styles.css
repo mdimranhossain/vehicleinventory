@@ -99,6 +99,7 @@
 .delete,.update,.fupdate{
   padding: 0 4px 2px 4px;
   line-height: 1;
+  position: absolute;
 }
 
 #settings .row{
