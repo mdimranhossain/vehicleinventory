@@ -113,6 +113,9 @@
 .bx-wrapper .bx-controls-auto {
   bottom: -60px;
 }
+.bx-viewport{
+  height:auto!important;
+}
 .buttons{
   margin: 20px auto;
 }
