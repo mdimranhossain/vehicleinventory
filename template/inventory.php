@@ -7,6 +7,21 @@ $slug = get_option('vi_slug');
 $phone = get_option('vi_phone');
 ?>
 <script>document.title = "All Inventory";</script>
+<div class="bead">
+	<div class="container">
+	      <div class="text-center">
+	       <?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+	      </div>
+	   </div>
+	</div>
+	<div class="sub_header_menu">
+		<?php wp_nav_menu( array(
+		    'theme_location' => 'quick',
+		    'container_class' => 'sub-header-link'
+		    )
+		);
+		?>
+	</div>
 	<div id="inventory">
 		<?php
 			global $wpdb;
@@ -41,7 +56,7 @@ $phone = get_option('vi_phone');
 						</ul>
 	      			</div>
 	      		</div>
-	      		<div class="row">
+	      		<div class="row vehicle-content">
 	      			<div class="col-sm-4">
 						<?php
 							if($vehicle->gallery){ 
