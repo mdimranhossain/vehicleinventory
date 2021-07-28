@@ -9,6 +9,7 @@
  .vehicle{
    background: #fff;
    margin: 25px auto !important;
+   padding-bottom: 5px;
  }
 
 .vehicle-title{
