@@ -79,7 +79,7 @@
   border-color: #000;
 }
 
-#uploaded_file .thumbnail{
+#featured_thumb .thumbnail,#uploaded_file .thumbnail{
   width: 100px;
   height: 100px;
   padding: 2px;

@@ -281,6 +281,7 @@ function checkslug(){
     $('#vipublish').on('click', function(e){
       e.preventDefault();
       var endpoint = "<?php echo viurl("/vehicle.php");?>";
+      var message = "";
       $.ajax({
             url:endpoint,
             method: "POST",
@@ -292,7 +293,7 @@ function checkslug(){
             success: function(data) {
                 console.log(data);
                 var html = '<span>Saved <a href="">View</a></span>';
-                var message = '<div class="alert success">'+data.message+'</div>';
+                message = '<div class="alert success">'+data.message+'</div>';
                 $('#message').html(message);
             }
         });
