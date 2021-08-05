@@ -137,6 +137,7 @@ class Vehicle
             $data['message'] = "Vehicle Updated Successfully.";
         }else{
             $data['error'] = "Something Went Wrong!!!".$this->db->last_error;
+            $data['message'] = "";
         }
 
        return json_encode($data);
