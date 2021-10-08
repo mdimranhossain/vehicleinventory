@@ -14,16 +14,14 @@ if (file_exists($viAutoload)) {
 use Inc\Setting;
 $setting = new Setting();
 
-//$slug = $setting->viInventorySlug();
 $data = $setting->viInventoryOptions();
 
 function viurl(string $viLink){
 	return plugins_url($viLink, dirname(__FILE__));
 }
 if(!empty($_REQUEST['vi_slug'])){
-  //$slug = trim($_REQUEST['vi_slug']);
-  //$setting->viUpdateSlug($slug);
   $data['slug'] = trim($_REQUEST['vi_slug']);
+  $data['pageTitle'] = trim($_REQUEST['vi_pageTitle']);
   $data['emailfriend'] = trim($_REQUEST['vi_emailfriend']);
   $data['availability'] = trim($_REQUEST['vi_availability']);
   $data['address'] = trim($_REQUEST['vi_address']);
@@ -50,10 +48,13 @@ flush_rewrite_rules();
         <form id="visettings" action="" method="POST">
           <input type="hidden" name="user_id" value="">
           <div class="form-group">
-            <label class="control-label" for="vi_slug">Inventory Slug</label>
+          <label class="control-label" for="vi_slug">Inventory Slug</label>
             <div class="row">
-              <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="<?php echo $data['slug'];?>" />
-              
+              <input type="text" class="form-control col-sm-2" value="<?php echo esc_url(home_url()).'/';?>" disabled /><input type="text" class="form-control col-sm-3" id="vi_slug" name="vi_slug" value="<?php echo !empty($data['slug'])?$data['slug']:'';?>" />
+            </div>
+            <div class="row">
+            <label class="control-label" for="vi_pageTitle">List Page Title: </label>
+            <input type="text" class="form-control col-sm-6" id="vi_pageTitle" name="vi_pageTitle" value="<?php echo !empty($data['pageTitle'])?$data['pageTitle']:'';?>" />
             </div>
             <div class="row">
             <label class="control-label" for="vi_emailfriend">Email A Friend: </label>
@@ -89,25 +90,3 @@ flush_rewrite_rules();
 	</div>
 </div>
 <div style="display: block; clear: both;"></div>
-<script>
-		// jQuery(document).ready(function($){
-		// 	$('#saveslug').on('click', function(e){
-    //   e.preventDefault();
-    //   var endpoint = "";
-    //   $.ajax({
-    //         url:endpoint,
-    //         method: "POST",
-    //         data: new FormData(document.getElementById('visettings')),
-    //         contentType: false,
-    //         cache: false,
-    //         processData: false,
-    //         dataType: "json",
-    //         success: function(data) {
-    //             console.log(data);
-    //             var html = '';
-                  
-    //         }
-    //     });
-    //   });
-		// });
-		</script>

@@ -13,17 +13,17 @@
 if(file_exists($autoload)){
 	require_once($autoload);
 }
-use Inc\VehicleData;
+use Inc\Vehicle;
 
 class VehicleInventoryTest extends WP_UnitTestCase {
 
-	var $target;
+	var $endpoint;
 
 	public function setUp()
 	    {
 		parent::setUp();
-		$this->target="https://jsonplaceholder.typicode.com/users/";
-		$this->vehicles = new VehicleData($this->target);
+		$this->endpoint="https://jsonplaceholder.typicode.com/users/";
+		$this->vehicles = new Vehicle($this->endpoint);
 	    }
 
 		public function test_viVehicleList() {

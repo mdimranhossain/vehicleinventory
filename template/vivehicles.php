@@ -54,12 +54,12 @@ $vehicles = $wpdb->get_results($query);
 			</tbody>
 			<tfoot>
 				<tr>
-        <th>Title</th>
-        <th>Sale Price</th>
-        <th>MSRP</th>
-        <th>Description</th>
-        <th>Condition</th>
-        <th>Actions</th>
+                    <th>Title</th>
+                    <th>Sale Price</th>
+                    <th>MSRP</th>
+                    <th>Description</th>
+                    <th>Condition</th>
+                    <th>Actions</th>
 				</tr>
 			</tfoot>
 		</table>
@@ -102,11 +102,11 @@ $vehicles = $wpdb->get_results($query);
 <script>
   jQuery(document).ready(function($){
 	$('#vehicles').DataTable({
-                responsive: true,
+                responsive: true
                 });
 	
 	// delete action
-	$('.btn-delete').on('click', function() {
+	$(document).on('click','.btn-delete', function() {
         var modaltitle = "Delete Vehicle";
         var dataid = $(this).data('id');
         var featured = $(this).data('featured');
@@ -115,7 +115,7 @@ $vehicles = $wpdb->get_results($query);
         $('#deletemodal #id').attr('value',dataid);
         $('#deletemodal #featuredid').attr('value',featured);
         $('#deletemodal #galleryfiles').attr('value',gallery);
-        //console.log(gallery);
+        // console.log(modaltitle);
     });
 
 
@@ -134,7 +134,7 @@ $vehicles = $wpdb->get_results($query);
             processData: false,
             dataType: "json",
             success: function(data) {
-                console.log(data);
+               // console.log(data);
                 var html = '';
                     if (data.errors) {
                         html = '<div class="alert alert-danger">';

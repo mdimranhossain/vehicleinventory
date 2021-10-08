@@ -5,23 +5,17 @@
 get_header();
 $slug = get_option('vi_slug');
 $phone = get_option('vi_phone');
+$pageTitle = get_option('vi_pageTitle');
 ?>
-<script>document.title = "All Inventory";</script>
+<script>document.title = "<?php echo $pageTitle;?>";</script>
 <div class="bead">
 	<div class="container">
 	      <div class="text-center">
-	       <?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+		   <h1 class="entry-title"><?php echo $pageTitle;?></h1>
 	      </div>
 	   </div>
 	</div>
-	<div class="sub_header_menu">
-		<?php wp_nav_menu( array(
-		    'theme_location' => 'quick',
-		    'container_class' => 'sub-header-link'
-		    )
-		);
-		?>
-	</div>
+
 	<div id="inventory">
 		<?php
 			global $wpdb;
@@ -90,7 +84,7 @@ $phone = get_option('vi_phone');
 
 	      	</div>
 		<?php } // end foreach ?>
-		<div class="pages">
+		<div class="pages container">
 			<nav aria-label="Page navigation">
 				<?php
 					echo paginate_links( array(

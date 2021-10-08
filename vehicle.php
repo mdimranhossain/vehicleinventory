@@ -12,7 +12,6 @@ if (file_exists($viAutoload)) {
 }
 define( 'SHORTINIT', true );
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
-//require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-admin/admin.php' );
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-includes/post.php' );
 
 use Inc\Vehicle;

@@ -25,6 +25,9 @@ class Setting
         $slug = strtolower($data['slug']);
         update_option('vi_slug', $slug);
 
+        $pageTitle = $data['pageTitle'];
+        update_option('vi_pageTitle', $pageTitle);
+
         $emailfriend = strtolower($data['emailfriend']);
         update_option('vi_emailfriend', $emailfriend);
 
@@ -44,6 +47,7 @@ class Setting
         update_option('vi_weekend', $weekend);
         
         $data['slug'] = get_option('vi_slug');
+        $data['pageTitle'] = get_option('vi_pageTitle');
         $data['emailfriend'] = get_option('vi_emailfriend');
         $data['availability'] = get_option('vi_availability');
         $data['address'] = get_option('vi_address');
@@ -56,6 +60,7 @@ class Setting
     public function viInventoryOptions(): array
     {
         $data['slug'] = get_option('vi_slug');
+        $data['pageTitle'] = get_option('vi_pageTitle');
         $data['emailfriend'] = get_option('vi_emailfriend');
         $data['availability'] = get_option('vi_availability');
         $data['address'] = get_option('vi_address');
@@ -64,19 +69,4 @@ class Setting
         $data['weekend'] = get_option('vi_weekend');
         return $data;
     }
-
-    // public function viUpdateSlug($slug): string
-    // {
-    //     $data['slug'] = strtolower($slug);
-    //     update_option('vi_slug', $data['slug']);
-        
-    //     $data['vi_slug'] = get_option('vi_slug');
-    //     return json_encode($data);
-    // }
-
-    // public function viInventorySlug(): string
-    // {
-    //     $slug= get_option('vi_slug');
-    //     return $slug;
-    // }
 }
