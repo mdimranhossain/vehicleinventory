@@ -13,11 +13,12 @@ if(file_exists($autoload_file)){
 	require_once($autoload_file);
 }
 use Inc\Vehicle;
+
 class Vehiclelist_Test extends WP_UnitTestCase {
 	var $endpoint;
 	public function setUp(){
 		parent::setUp();
-		$this->endpoint="https://jsonplaceholder.typicode.com/users/";
+		$this->endpoint="https://imran.bhubs.com/wp-content/plugins/vehicleinventory/vehiclelist.php";
 		$this->vehicles = new Vehicle($this->endpoint);
 	    }
 	public function test_GetAllVehicle() {

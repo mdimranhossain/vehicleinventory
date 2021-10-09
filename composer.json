@@ -13,8 +13,5 @@
     "require":{},
     "autoload":{
 		"psr-4":{"Inc\\":"./inc"}
-	   },
-    "require-dev": {
-		"phpcompatibility/phpcompatibility-wp": "*"
-    }
+	   }
 }
