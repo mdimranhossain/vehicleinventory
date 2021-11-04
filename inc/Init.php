@@ -10,6 +10,7 @@ namespace Inc;
 
 class Init
 {
+    public $plugin;
     private $viUrl;
     private $viPath;
     private $db;
@@ -29,7 +30,7 @@ class Init
         $this->db = $wpdb;
         $this->table = $this->db->prefix.'inventory';
         $this->imageTable = $this->db->prefix.'inventory_images';
-
+        $this->plugin = plugin_basename(__FILE__);
         $this->viUrl = plugins_url("", dirname(__FILE__));
         $this->viPath = dirname(__FILE__, 2);
         
@@ -74,6 +75,8 @@ class Init
                 die;
             }
         } );
+
+       // add_filter( 'plugin_action_links', [$this,'viSettingLink']);
     }
 
     public function viAddPage()
@@ -202,48 +205,48 @@ class Init
         $data=[];
         // Check if image file is a actual image or fake image
         if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["file"]["tmp_name"]);
-        if($check !== false) {
-            $data['mime'] = "File is - " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            $data['not_allowed'] = "File is not allowed.";
-            $uploadOk = 0;
-        }
+            $check = getimagesize($_FILES["file"]["tmp_name"]);
+            if($check !== false) {
+                $data['mime'] = "File is - " . $check["mime"] . ".";
+                $uploadOk = 1;
+            } else {
+                $data['not_allowed'] = "File is not allowed.";
+                $uploadOk = 0;
+            }
         }
 
         // Check if file already exists
         if (file_exists($target_file)) {
-        $data['duplicate'] = "Sorry, file already exists. Please rename your file.";
-        //$data['filename'] = $target_file.'-1';
-        $uploadOk = 0;
+            $data['duplicate'] = "Sorry, file already exists. Please rename your file.";
+            //$data['filename'] = $target_file.'-1';
+            $uploadOk = 0;
         }
 
         // Check file size
         if ($_FILES["file"]["size"] > 500000) {
-        $data['size_error'] = "Sorry, your file is too large.";
-        $uploadOk = 0;
+            $data['size_error'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
         }
         $data['filetype'] = $imageFileType;
         // Allow certain file formats
         $allowed =['pdf','doc','docx','odt'];
         if(!in_array($imageFileType,$allowed)) {
-        $data['type_error'] = "Sorry, only PDF and or Word files are allowed.";
-        $uploadOk = 0;
+            $data['type_error'] = "Sorry, only PDF and or Word files are allowed.";
+            $uploadOk = 0;
         }
 
         // Check if $uploadOk is set to 0 by an error
         if ($uploadOk == 0) {
-        $data['upload_error'] = "Sorry, your file was not uploaded.";
+            $data['upload_error'] = "Sorry, your file was not uploaded.";
         // if everything is ok, try to upload file
         } else {
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            $data['success'] = "The file ". htmlspecialchars( basename($_FILES["file"]["name"])). " has been uploaded.";
-            $data['dir'] = $target_dir;
-            $data['file'] = wp_upload_dir().'/'.$target_file;
-        } else {
-            $data['file_error'] = "Sorry, there was an error uploading your file.";
-        }
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+                $data['success'] = "The file ". htmlspecialchars( basename($_FILES["file"]["name"])). " has been uploaded.";
+                $data['dir'] = $target_dir;
+                $data['file'] = wp_upload_dir().'/'.$target_file;
+            } else {
+                $data['file_error'] = "Sorry, there was an error uploading your file.";
+            }
         }
         echo json_encode($data);
         die();
@@ -267,6 +270,12 @@ class Init
     public function viSettings()
     {
         include_once($this->viPath . '/template/visettings.php');
+    }
+    public function viSettingLink($links)
+    {
+        $setting_link['visettings'] = '<a href="admin.php?page=visettings">Settings</a>';
+        return array_merge($links,$setting_link);
+        //return $links;
     }
     
 

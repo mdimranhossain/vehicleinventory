@@ -6,6 +6,7 @@ get_header();
 $slug = get_option('vi_slug');
 $phone = get_option('vi_phone');
 $pageTitle = get_option('vi_pageTitle');
+
 ?>
 <script>document.title = "<?php echo $pageTitle;?>";</script>
 <div class="bead">
