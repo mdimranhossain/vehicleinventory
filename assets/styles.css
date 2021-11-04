@@ -81,6 +81,19 @@
 .slider img{
   max-width: 100%;
 }
+
+.pager{
+  list-style: none;
+}
+.pager li{
+  display: inline-block;
+  vertical-align: top;
+}
+.pager img{
+  width: 100px;
+  height:80px;
+}
+
 .moreinfo{
   font-size:28px;
 }
@@ -114,6 +127,7 @@
   box-shadow:none;
   -moz-box-shadow:none;
   -webkit-box-shadow:none;
+  margin-bottom: 5px;
 }
 .bx-wrapper .bx-pager,
 .bx-wrapper .bx-controls-auto {
@@ -131,4 +145,7 @@
   max-width  : 80%;
   max-height : 80%;
   margin: 0;
+}
+.bg-grey{
+  background: #ececec;
 }

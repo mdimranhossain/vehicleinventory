@@ -27,6 +27,12 @@ class Vehicle
         return json_encode($vehicles);
     }
 
+    public function viTotal(): int
+    {
+        $total = $this->db->get_var($this->db->prepare("SELECT COUNT('id') FROM {$table} WHERE %d", 1));
+        return $total;
+    }
+
     public function viCreate(): string
     {
         $input = $_POST;

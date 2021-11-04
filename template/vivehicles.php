@@ -7,7 +7,7 @@ require_once( ABSPATH . 'wp-load.php' );
 require_once( ABSPATH . 'wp-admin/admin.php' );
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 
- $viAutoload = dirname(__FILE__) . '/vendor/autoload.php';
+$viAutoload = dirname(__FILE__) . '/vendor/autoload.php';
 if (file_exists($viAutoload)) {
     require_once $viAutoload;
 }
